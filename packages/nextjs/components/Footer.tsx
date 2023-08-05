@@ -15,15 +15,7 @@ export const Footer = () => {
         <ul className="menu menu-horizontal w-full">
           <div className="flex justify-center items-center gap-2 text-sm w-full">
             <div>
-              Built with <HeartIcon className="inline-block h-4 w-4" /> by{" "}
-              <a
-                href="https://buidlguidl.com/"
-                target="_blank"
-                rel="noreferrer"
-                className="underline underline-offset-2"
-              >
-                Pendulum Team
-              </a>
+              Built with <HeartIcon className="inline-block h-4 w-4" /> by Pendulum Team
             </div>
             <span>·</span>
             <div>
@@ -33,7 +25,7 @@ export const Footer = () => {
                 rel="noreferrer"
                 className="underline underline-offset-2"
               >
-                Support
+                Subscribe
               </a>
             </div>
           </div>

@@ -20,16 +20,14 @@ const ScaffoldEthApp = ({ Component, pageProps }: AppProps) => {
 
   useEffect(() => {
     setIsDarkTheme(isDarkMode);
+    const body = document.body;
+    body.setAttribute("data-theme", "scaffoldEthDark");
   }, [isDarkMode]);
 
   return (
     <WagmiConfig config={wagmiConfig}>
       <NextNProgress />
-      <RainbowKitProvider
-        chains={appChains.chains}
-        avatar={BlockieAvatar}
-        theme={isDarkTheme ? darkTheme() : lightTheme()}
-      >
+      <RainbowKitProvider chains={appChains.chains} avatar={BlockieAvatar} theme={darkTheme()}>
         <div className="flex flex-col min-h-screen">
           <Header />
           <main className="relative flex flex-col flex-1">
