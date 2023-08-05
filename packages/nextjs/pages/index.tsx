@@ -50,6 +50,15 @@ const Home: NextPage = () => {
           </Button>
         </div>
       </div>
+      <div className="flex flex-col bg-base-100 px-10 py-10 text-center items-center max-w-xs rounded-3xl">
+              <p>
+                Experiment with{" "}
+                <Link href="/example-ui" passHref className="link">
+                  Example UI
+                </Link>{" "}
+                to build your own UI.
+              </p>
+            </div>
     </>
   );
 };
