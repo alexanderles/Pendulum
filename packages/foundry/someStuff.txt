@@ -1,0 +1,6 @@
+[etherscan]
+polygonMumbai = { key = "${ETHERSCAN_API_KEY}" }
+goerli = { key = "${ETHERSCAN_API_KEY}" }
+
+  Pendulum Implementation: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+  Pendulum: 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512

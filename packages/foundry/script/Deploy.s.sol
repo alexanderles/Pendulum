@@ -3,19 +3,32 @@ pragma solidity ^0.8.19;
 
 import "../contracts/Pendulum.sol";
 import "./DeployHelpers.s.sol";
+import {ERC1967Proxy} from "../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+// import "../lib/forge-std/src/console.sol";
+import "forge-std/console.sol";
 
 contract DeployScript is ScaffoldETHDeploy {
+    string private name;
+    string private symbol;
+    Pendulum public pendulum;
+
     function run() external {
+        name = "Pendulum";
+        symbol = "PP";
         uint256 deployerPrivateKey = setupLocalhostEnv();
 
         vm.startBroadcast(deployerPrivateKey);
-        Pendulum pendulum = new Pendulum();
-        console.logString(
-            string.concat(
-                "YourContract deployed at: ",
-                vm.toString(address(pendulum))
-            )
+
+        pendulum = new Pendulum();
+        console.log("Pendulum Implementation:", address(pendulum));
+
+        ERC1967Proxy proxy = new ERC1967Proxy(
+            address(pendulum),
+            abi.encodeWithSelector(pendulum.initialize.selector, name, symbol)
         );
+        pendulum = Pendulum(address(proxy));
+        console.log("Pendulum:", address(pendulum));
+
         vm.stopBroadcast();
 
         /**

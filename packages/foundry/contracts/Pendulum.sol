@@ -11,6 +11,30 @@ import "../lib/openzeppelin-contracts-upgradeable/contracts/token/ERC721/IERC721
 // TODO make sure what the difference between setApproval and setApprovalForAll is
 
 contract Pendulum is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
+    // CONSTANT
+    uint256 private constant _VERSION = 1;
+
+    uint256 internal constant _FEE_DENOMINATOR = 100_00;
+
+    uint256 internal constant _TAX_PERIOD = 7 days; // can make minimum 1 day
+
+    uint256 internal constant _MAXIMUM_DURATION = 365 days;
+
+    uint256 internal constant _MAXIMUM_PRICE = 2 ** 128;
+
+    string internal _tokenURI;
+    // Address variables
+    address public factory;
+    address public beneficiary; // TODO prolly don't need this
+
+    // Auction Parameters
+    uint256 public auctionStartingPrice;
+    uint256 public auctionMinBidStep;
+    uint256 public auctionMinDuration;
+    uint256 public auctionBidExtension;
+    uint256 public auctionEndTime; // 0 when not in auction
+    address public leadingBidder; // leading bidder in auction
+    uint256 public leadingBid; // leading bid made my the leading bidder
 
     event Creation(string indexed name, string indexed symbol);
 
@@ -18,24 +42,48 @@ contract Pendulum is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
 
     function initialize(
         string memory name_,
-        string memory symbol_
+        string memory symbol_,
+        string memory tokenURI_,
+        uint256 _auctionStartingPrice, //set default to 0
+        uint256 _auctionMinBidStep, //set default to 0
+        uint256 _auctionMinDuration, //set default to 1 days, acts as end time
+        uint256 _auctionBidExtension, // default 5 mins, or 15
+        address _beneficiary
     ) external initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
         __ERC721_init(name_, symbol_);
 
+        _tokenURI = tokenURI_;
+        // Auction Parameters
+        auctionStartingPrice = _auctionStartingPrice;
+        auctionMinBidStep = _auctionMinBidStep;
+        auctionMinDuration = _auctionMinDuration;
+        // auctionKeeperMinimumDuration = 1 days; TODO same as auctionMinDuration
+        auctionBidExtension = _auctionBidExtension;
+
+        // addresses
+        beneficiary = _beneficiary;
+        factory = msg.sender;
+
         emit Creation(name_, symbol_);
     }
 
-    // function supportsInterface(
-    //     bytes4 interfaceId
-    // ) public view override(ERC721P, IERC165Upgradeable) returns (bool) {
-    //     return
-    //         interfaceId == type(IPendulum).interfaceId ||
-    //         interfaceId == type(IERC721Upgradeable).interfaceId ||
-    //         interfaceId == type(IERC721MetadataUpgradeable).interfaceId ||
-    //         super.supportsInterface(interfaceId);
-    // }
+    function setAuctionParameters(
+        uint256 newStartingPrice,
+        uint256 newMinBidStep,
+        uint256 newMinDuration,
+        // uint256 newKeeperMinDuration,
+        uint256 newBidExtension
+    ) external virtual {
+        auctionStartingPrice = newStartingPrice;
+        auctionMinBidStep = newMinBidStep > 0 ? newMinBidStep : 1;
+        auctionMinDuration = newMinDuration;
+        // TODO keeper min duration
+        auctionBidExtension = newBidExtension;
+
+        // emit the new changes
+    }
 
     function _authorizeUpgrade(
         address newImplementation
