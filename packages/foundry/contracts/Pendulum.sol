@@ -36,8 +36,6 @@ contract Pendulum is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
     address public leadingBidder; // leading bidder in auction
     uint256 public leadingBid; // leading bid made my the leading bidder
 
-    event Creation(string indexed name, string indexed symbol);
-
     // This function will be called by parent class to initialize the ERC721
 
     function initialize(
@@ -65,8 +63,6 @@ contract Pendulum is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
         // addresses
         beneficiary = _beneficiary;
         factory = msg.sender;
-
-        emit Creation(name_, symbol_);
     }
 
     function setAuctionParameters(

@@ -2,32 +2,86 @@
 pragma solidity ^0.8.19;
 
 import "../contracts/Pendulum.sol";
+import "../contracts/PendulumFactory.sol";
+
 import "./DeployHelpers.s.sol";
 import {ERC1967Proxy} from "../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 // import "../lib/forge-std/src/console.sol";
 import "forge-std/console.sol";
 
 contract DeployScript is ScaffoldETHDeploy {
-    string private name;
-    string private symbol;
+    string public name;
+    string public symbol;
+    string public tokenURI;
+    uint256 public auctionStartingPrice;
+    uint256 public auctionMinBidStep;
+    uint256 public auctionMinDuration;
+    uint256 public auctionBidExtension;
+    address public beneficiary;
+
     Pendulum public pendulum;
+    PendulumFactory public pendulumFactory;
 
     function run() external {
         name = "Pendulum";
         symbol = "PP";
+        tokenURI = "";
+        auctionStartingPrice = 0 ether; //set default to 0
+        auctionMinBidStep = 0.05 ether; //set default to 0
+        auctionMinDuration = 1 days; //set default to 1 days
+        auctionBidExtension = 5 minutes; // default 5 mins, or 15
+        beneficiary = msg.sender;
+
         uint256 deployerPrivateKey = setupLocalhostEnv();
 
         vm.startBroadcast(deployerPrivateKey);
 
+        pendulumFactory = new PendulumFactory();
+        console.log("Pendulum Factory Impl:", address(pendulumFactory));
+
+        ERC1967Proxy pendulumFactoryProxy = new ERC1967Proxy(
+            address(pendulumFactory),
+            abi.encodeWithSelector(pendulumFactory.initialize.selector)
+        );
+        pendulumFactory = PendulumFactory(address(pendulumFactoryProxy));
+        console.log("PendulumFactory: ", address(pendulumFactory));
+
         pendulum = new Pendulum();
         console.log("Pendulum Implementation:", address(pendulum));
 
-        ERC1967Proxy proxy = new ERC1967Proxy(
-            address(pendulum),
-            abi.encodeWithSelector(pendulum.initialize.selector, name, symbol)
+        bytes memory pendulumInitializationCalldata = abi.encodeWithSelector(
+            pendulum.initialize.selector,
+            name,
+            symbol,
+            tokenURI,
+            auctionStartingPrice,
+            auctionMinBidStep,
+            auctionMinDuration,
+            auctionBidExtension,
+            beneficiary
         );
-        pendulum = Pendulum(address(proxy));
-        console.log("Pendulum:", address(pendulum));
+
+        pendulumFactory.registerVersion(1, address(pendulum));
+        pendulumFactory.createPendulum(
+            name,
+            symbol,
+            tokenURI,
+            auctionStartingPrice,
+            auctionMinBidStep,
+            auctionMinDuration,
+            auctionBidExtension,
+            beneficiary
+        );
+
+        pendulum = Pendulum(pendulumFactory.pendulums(0));
+        console.log("Pendulum: ", address(pendulum));
+
+        // ERC1967Proxy proxy = new ERC1967Proxy(
+        //     address(pendulum),
+
+        // );
+        // pendulum = Pendulum(address(proxy));
+        // console.log("Pendulum:", address(pendulum));
 
         vm.stopBroadcast();
 
