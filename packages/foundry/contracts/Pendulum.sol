@@ -11,6 +11,9 @@ import "../lib/openzeppelin-contracts-upgradeable/contracts/token/ERC721/IERC721
 // TODO make sure what the difference between setApproval and setApprovalForAll is
 
 contract Pendulum is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
+
+    event Creation(string indexed name, string indexed symbol);
+
     // This function will be called by parent class to initialize the ERC721
 
     function initialize(
@@ -20,6 +23,8 @@ contract Pendulum is ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
         __Ownable_init();
         __UUPSUpgradeable_init();
         __ERC721_init(name_, symbol_);
+
+        emit Creation(name_, symbol_);
     }
 
     // function supportsInterface(

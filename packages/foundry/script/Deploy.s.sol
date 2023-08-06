@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "../contracts/YourContract.sol";
+import "../contracts/Pendulum.sol";
 import "./DeployHelpers.s.sol";
 
 contract DeployScript is ScaffoldETHDeploy {
@@ -9,13 +9,11 @@ contract DeployScript is ScaffoldETHDeploy {
         uint256 deployerPrivateKey = setupLocalhostEnv();
 
         vm.startBroadcast(deployerPrivateKey);
-        YourContract yourContract = new YourContract(
-            vm.addr(deployerPrivateKey)
-        );
+        Pendulum pendulum = new Pendulum();
         console.logString(
             string.concat(
                 "YourContract deployed at: ",
-                vm.toString(address(yourContract))
+                vm.toString(address(pendulum))
             )
         );
         vm.stopBroadcast();

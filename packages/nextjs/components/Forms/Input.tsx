@@ -8,12 +8,14 @@ const Input = ({
   rounded = "rounded-2xl",
   placeholder = "",
   type = "text",
+  onChange= (e: any) => {}
 }) => {
   return (
     <input
       type={type}
       className={`text-black block w-full focus:ring focus:ring-opacity-50 bg-white border-neutral-700 focus:ring-primary-600 focus:ring-opacity-25 bg-neutral-900 disabled:bg-neutral-800 ${rounded} ${fontClass} ${sizeClass} ${className}`}
       placeholder={placeholder}
+      onChange={onChange}
     />
   );
 };
