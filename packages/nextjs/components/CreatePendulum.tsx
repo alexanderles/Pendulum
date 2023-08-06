@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
+import { ethers } from "ethers";
 import { EventDispatcher } from "three";
 import { ArrowSmallRightIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
@@ -9,16 +10,32 @@ import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 export const CreatePendulum = () => {
   const [topicName, setTopicName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
+  const [auctionStartingPrice, setAuctionStartingPrice] = useState("0");
+  const [auctionMinBidStep, setAuctionMinBidStep] = useState("0");
+  const [auctionMinDuration, setAuctionMinDuration] = useState(0);
+  const [beneficiary, setBeneficiary] = useState("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+
+  function daysToSeconds(days: number) {
+    return days * 24 * 60 * 60;
+  }
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
-    contractName: "Pendulum",
-    functionName: "initialize",
-    args: [topicName, tokenSymbol],
-    // value: "0.01",
+    contractName: "PendulumFactory",
+    functionName: "createPendulum",
+    args: [
+      topicName,
+      tokenSymbol,
+      "",
+      BigInt(ethers.parseEther(String(auctionStartingPrice))),
+      BigInt(ethers.parseEther(String(auctionMinBidStep))),
+      BigInt(daysToSeconds(auctionMinDuration)),
+      BigInt(900),
+      beneficiary,
+    ],
+    //args: ["Account Abstraction", "AA", "", 1000000, 1000, 300, 400, beneficiary],
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
-      console.log("Topic name: ", topicName);
-      console.log("Token symbol: ", tokenSymbol);
+      console.log(txnReceipt);
     },
   });
 
@@ -34,11 +51,31 @@ export const CreatePendulum = () => {
       <hr className="w-full border-t-2 border-neutral-700" />
       <div className="mt-10 md:mt-0 space-y-5 sm:space-y-6 md:sm:space-y-8">
         <FormItem label="Pendulum Topic">
-          <Input placeholder="Account Abstraction" onChange={e => setTopicName(e.target.value)}/>
+          <Input placeholder="Account Abstraction" onChange={e => setTopicName(e.target.value)} />
         </FormItem>
         <FormItem label="Symbol">
-          <Input placeholder="NFT" onChange={e => setTokenSymbol(e.target.value)} />
+          <Input placeholder="AA" onChange={e => setTokenSymbol(e.target.value)} />
         </FormItem>
+
+        <FormItem label="Auction Starting Price">
+          <Input placeholder="0.1" onChange={e => setAuctionStartingPrice(e.target.value)} />
+        </FormItem>
+
+        <FormItem label="Auction Min Bid Increase">
+          <Input placeholder="0.05" onChange={e => setAuctionMinBidStep(e.target.value)} />
+        </FormItem>
+
+        <FormItem label="Auction Duration">
+          <Input placeholder="3 days" onChange={e => setAuctionMinDuration(e.target.value)} />
+        </FormItem>
+
+        <FormItem label="Creator Address">
+          <Input
+            placeholder="0x5621b3d8C7F87E833430ed5c9Ff1896630821139"
+            onChange={e => setBeneficiary(e.target.value)}
+          />
+        </FormItem>
+
         <Button type="submit" className={`${isLoading ? "loading" : ""}`} onClick={() => writeAsync()}>
           {!isLoading && <>Create Pendulum</>}
         </Button>

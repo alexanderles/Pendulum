@@ -3,11 +3,11 @@ pragma solidity ^0.8.19;
 
 import "../contracts/Pendulum.sol";
 import "../contracts/PendulumFactory.sol";
-
 import "./DeployHelpers.s.sol";
-import {ERC1967Proxy} from "../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
+//import {ERC1967Proxy} from "../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 // import "../lib/forge-std/src/console.sol";
 import "forge-std/console.sol";
+import {CreateProxy} from "../contracts/CreateProxy.sol";
 
 contract DeployScript is ScaffoldETHDeploy {
     string public name;
@@ -39,29 +39,20 @@ contract DeployScript is ScaffoldETHDeploy {
         pendulumFactory = new PendulumFactory();
         console.log("Pendulum Factory Impl:", address(pendulumFactory));
 
-        ERC1967Proxy pendulumFactoryProxy = new ERC1967Proxy(
+        CreateProxy pendulumFactoryProxy = new CreateProxy(
             address(pendulumFactory),
             abi.encodeWithSelector(pendulumFactory.initialize.selector)
         );
+
         pendulumFactory = PendulumFactory(address(pendulumFactoryProxy));
         console.log("PendulumFactory: ", address(pendulumFactory));
+        console.log("Deploy Caller", msg.sender);
+        console.log("Factory Owner", pendulumFactory.owner());
 
         pendulum = new Pendulum();
         console.log("Pendulum Implementation:", address(pendulum));
 
-        bytes memory pendulumInitializationCalldata = abi.encodeWithSelector(
-            pendulum.initialize.selector,
-            name,
-            symbol,
-            tokenURI,
-            auctionStartingPrice,
-            auctionMinBidStep,
-            auctionMinDuration,
-            auctionBidExtension,
-            beneficiary
-        );
-
-        pendulumFactory.registerVersion(1, address(pendulum));
+        pendulumFactory.registerVersion(0, address(pendulum));
         pendulumFactory.createPendulum(
             name,
             symbol,

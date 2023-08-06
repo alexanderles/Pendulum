@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {ERC1967Proxy} from "../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import {OwnableUpgradeable} from "../lib/openzeppelin-contracts-upgradeable/contracts/access/OwnableUpgradeable.sol";
 import {UUPSUpgradeable} from "../lib/openzeppelin-contracts-upgradeable/contracts/proxy/utils/UUPSUpgradeable.sol";
 import {ClonesUpgradeable} from "../lib/openzeppelin-contracts-upgradeable/contracts/proxy/ClonesUpgradeable.sol";
 import "./Pendulum.sol";
 import "./interfaces/IOwnershipTransferrable.sol";
+import {CreateProxy} from "./CreateProxy.sol";
 
 contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
     uint256 private constant _VERSION = 1;
@@ -39,7 +39,24 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
         uint256 _auctionMinDuration,
         uint256 _auctionBidExtension,
         address _beneficiary
-    ) external virtual onlyOwner {
+    ) external virtual {
+        // Pendulum pendulum = new Pendulum();
+
+        // pendulumFactory.registerVersion(1, address(pendulum));
+        // pendulumFactory.createPendulum(
+        //     name,
+        //     symbol,
+        //     tokenURI,
+        //     auctionStartingPrice,
+        //     auctionMinBidStep,
+        //     auctionMinDuration,
+        //     auctionBidExtension,
+        //     beneficiary
+        // );
+
+        // pendulum = Pendulum(pendulumFactory.pendulums(0));
+        // console.log("Pendulum: ", address(pendulum));
+
         bytes memory initializeCalldata = abi.encodeWithSelector(
             Pendulum.initialize.selector,
             name,
@@ -51,11 +68,12 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
             _auctionBidExtension,
             _beneficiary
         );
-        ERC1967Proxy proxy = new ERC1967Proxy(versions[1], initializeCalldata);
-        pendulums[pendulumCount] = address(proxy);
-        IOwnershipTransferrable(pendulums[pendulumCount]).transferOwnership(
-            msg.sender
+        CreateProxy proxy = new CreateProxy(
+            versions[pendulumCount],
+            initializeCalldata
         );
+        pendulums[pendulumCount] = address(proxy);
+        IOwnershipTransferrable(pendulums[0]).transferOwnership(msg.sender);
 
         emit Creation(name, pendulumCount, address(proxy));
 
