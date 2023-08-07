@@ -3,8 +3,6 @@ import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
 import { ethers } from "ethers";
-import { EventDispatcher } from "three";
-import { ArrowSmallRightIcon } from "@heroicons/react/24/outline";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
 export const CreatePendulum = () => {

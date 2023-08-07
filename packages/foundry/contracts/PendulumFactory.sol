@@ -10,8 +10,14 @@ import {CreateProxy} from "./CreateProxy.sol";
 
 contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
     uint256 private constant _VERSION = 1;
+
+    // Mapping for all pendulums created from this factory
     mapping(uint256 => address) public pendulums;
+
+    // Number of pendulums created from this factory
     uint256 public pendulumCount;
+
+    // Mapping of version numbers to base pendulum contract implementations
     mapping(uint256 versionNumber => address implementation) public versions;
 
     event Creation(
@@ -40,23 +46,6 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
         uint256 _auctionBidExtension,
         address _beneficiary
     ) external virtual {
-        // Pendulum pendulum = new Pendulum();
-
-        // pendulumFactory.registerVersion(1, address(pendulum));
-        // pendulumFactory.createPendulum(
-        //     name,
-        //     symbol,
-        //     tokenURI,
-        //     auctionStartingPrice,
-        //     auctionMinBidStep,
-        //     auctionMinDuration,
-        //     auctionBidExtension,
-        //     beneficiary
-        // );
-
-        // pendulum = Pendulum(pendulumFactory.pendulums(0));
-        // console.log("Pendulum: ", address(pendulum));
-
         bytes memory initializeCalldata = abi.encodeWithSelector(
             Pendulum.initialize.selector,
             name,
@@ -69,11 +58,11 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
             _beneficiary
         );
         CreateProxy proxy = new CreateProxy(
-            versions[pendulumCount],
+            versions[1], // May be issue with erc1967 upgradable
             initializeCalldata
         );
         pendulums[pendulumCount] = address(proxy);
-        IOwnershipTransferrable(pendulums[0]).transferOwnership(msg.sender);
+        // IOwnershipTransferrable(pendulums[0]).transferOwnership(msg.sender);
 
         emit Creation(name, pendulumCount, address(proxy));
 
@@ -90,4 +79,10 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
     function _authorizeUpgrade(
         address newImplementation
     ) internal override onlyOwner {}
+
+    /** Getter Methods */
+
+    function getVersion(uint256 key) public view returns(address) {
+        return versions[key];
+    }
 }

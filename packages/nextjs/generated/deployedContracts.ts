@@ -5,7 +5,7 @@ const contracts = {
       chainId: "31337",
       contracts: {
         PendulumFactory: {
-          address: "0x4826533B4897376654Bb4d4AD88B7faFD0C98528",
+          address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
           abi: [
             {
               inputs: [],
@@ -318,7 +318,7 @@ const contracts = {
           ],
         },
         CreateProxy: {
-          address: "0x99bbA657f2BbC93c02D617f8bA121cB8Fc104Acf",
+          address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
           abi: [
             {
               inputs: [
@@ -392,7 +392,7 @@ const contracts = {
           ],
         },
         Pendulum: {
-          address: "0x0E801D84Fa97b50751Dbf25036d067dCf18858bF",
+          address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
           abi: [
             {
               anonymous: false,

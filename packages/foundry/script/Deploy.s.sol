@@ -52,20 +52,21 @@ contract DeployScript is ScaffoldETHDeploy {
         pendulum = new Pendulum();
         console.log("Pendulum Implementation:", address(pendulum));
 
-        pendulumFactory.registerVersion(0, address(pendulum));
-        pendulumFactory.createPendulum(
-            name,
-            symbol,
-            tokenURI,
-            auctionStartingPrice,
-            auctionMinBidStep,
-            auctionMinDuration,
-            auctionBidExtension,
-            beneficiary
-        );
+        pendulumFactory.registerVersion(1, address(pendulum));
+        console.log("Version registered");
+        // pendulumFactory.createPendulum(
+        //     name,
+        //     symbol,
+        //     tokenURI,
+        //     auctionStartingPrice,
+        //     auctionMinBidStep,
+        //     auctionMinDuration,
+        //     auctionBidExtension,
+        //     beneficiary
+        // );
 
-        pendulum = Pendulum(pendulumFactory.pendulums(0));
-        console.log("Pendulum: ", address(pendulum));
+        // pendulum = Pendulum(pendulumFactory.pendulums(0));
+        // console.log("Pendulum: ", address(pendulum));
 
         // ERC1967Proxy proxy = new ERC1967Proxy(
         //     address(pendulum),
