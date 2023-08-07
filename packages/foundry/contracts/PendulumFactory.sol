@@ -44,7 +44,6 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
         uint256 _auctionStartingPrice,
         uint256 _auctionMinBidStep,
         uint256 _auctionMinDuration,
-        uint256 _auctionBidExtension,
         address _beneficiary
     ) external virtual {
         bytes memory initializeCalldata = abi.encodeWithSelector(
@@ -55,7 +54,6 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
             _auctionStartingPrice,
             _auctionMinBidStep,
             _auctionMinDuration,
-            _auctionBidExtension,
             _beneficiary
         );
         console.log("CALL DATA");

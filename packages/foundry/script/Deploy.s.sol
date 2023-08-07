@@ -16,7 +16,7 @@ contract DeployScript is ScaffoldETHDeploy {
     uint256 public auctionStartingPrice;
     uint256 public auctionMinBidStep;
     uint256 public auctionMinDuration;
-    uint256 public auctionBidExtension;
+
     address public beneficiary;
 
     Pendulum public pendulum;
@@ -29,7 +29,7 @@ contract DeployScript is ScaffoldETHDeploy {
         auctionStartingPrice = 0 ether; //set default to 0
         auctionMinBidStep = 0.05 ether; //set default to 0
         auctionMinDuration = 1 days; //set default to 1 days
-        auctionBidExtension = 5 minutes; // default 5 mins, or 15
+
         beneficiary = msg.sender;
 
         uint256 deployerPrivateKey = setupLocalhostEnv();

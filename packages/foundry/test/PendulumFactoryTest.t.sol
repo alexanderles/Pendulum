@@ -9,14 +9,13 @@ import "../contracts/PendulumFactory.sol";
 import {CreateProxy} from "../contracts/CreateProxy.sol";
 
 contract PendulumFactoryTest is Test {
-
     string public name;
     string public symbol;
     string public tokenURI;
     uint256 public auctionStartingPrice;
     uint256 public auctionMinBidStep;
     uint256 public auctionMinDuration;
-    uint256 public auctionBidExtension;
+
     address public beneficiary;
 
     Pendulum public pendulum;
@@ -29,7 +28,7 @@ contract PendulumFactoryTest is Test {
         auctionStartingPrice = 0 ether; //set default to 0
         auctionMinBidStep = 0.05 ether; //set default to 0
         auctionMinDuration = 1 days; //set default to 1 days
-        auctionBidExtension = 5 minutes; // default 5 mins, or 15
+
         beneficiary = msg.sender;
 
         pendulumFactory = new PendulumFactory();
@@ -52,7 +51,6 @@ contract PendulumFactoryTest is Test {
         console.log("Version registered");
     }
 
-
     function testCreatePendulum() public {
         pendulumFactory.createPendulum(
             "Pendulum1",
@@ -61,14 +59,12 @@ contract PendulumFactoryTest is Test {
             auctionStartingPrice,
             auctionMinBidStep,
             auctionMinDuration,
-            auctionBidExtension,
             beneficiary
         );
 
         Pendulum pendulum1 = new Pendulum();
         pendulum1 = Pendulum(pendulumFactory.pendulums(0));
         console.log("Pendulum1: ", address(pendulum1));
-
 
         pendulumFactory.createPendulum(
             "Pendulum2",
@@ -77,7 +73,6 @@ contract PendulumFactoryTest is Test {
             auctionStartingPrice,
             auctionMinBidStep,
             auctionMinDuration,
-            auctionBidExtension,
             beneficiary
         );
 
@@ -92,7 +87,6 @@ contract PendulumFactoryTest is Test {
             auctionStartingPrice,
             auctionMinBidStep,
             auctionMinDuration,
-            auctionBidExtension,
             beneficiary
         );
 
@@ -108,5 +102,4 @@ contract PendulumFactoryTest is Test {
 
         assertEq(pendulumFactory.pendulumCount(), 3);
     }
-    
 }
