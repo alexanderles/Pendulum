@@ -9,7 +9,7 @@ export const Footer = () => {
   const nativeCurrencyPrice = useGlobalState(state => state.nativeCurrencyPrice);
 
   return (
-    <div className="min-h-0 p-5 mb-11 lg:mb-0">
+    <div className="min-h-0 p-5 mb-11 lg:mb-0 bg-base-300">
       <div></div>
       <div className="w-full">
         <ul className="menu menu-horizontal w-full">

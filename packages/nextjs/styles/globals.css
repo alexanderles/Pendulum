@@ -2,9 +2,14 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-:root,
+/* :root,
 [data-theme] {
   background: hsl(var(--b2));
+} */
+
+:root,
+[data-theme] {
+  background: #020617;
 }
 
 body {

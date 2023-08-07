@@ -135,7 +135,9 @@ export type UseScaffoldReadConfig<
     functionName: TFunctionName;
   } & UseScaffoldArgsParam<TContractName, TFunctionName> &
     Omit<UseContractReadConfig, "chainId" | "abi" | "address" | "functionName" | "args">
->;
+> & {
+    address?: string;
+  };
 
 export type UseScaffoldWriteConfig<
   TContractName extends ContractName,

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import Button from "./Button";
-import FormItem from "./Forms/FormItem";
-import Input from "./Forms/Input";
+import Button from "../Button";
+import FormItem from "../Forms/FormItem";
+import Input from "../Forms/Input";
 import { ethers } from "ethers";
 import { EventDispatcher } from "three";
 import { ArrowSmallRightIcon } from "@heroicons/react/24/outline";
@@ -25,7 +25,6 @@ export const UpdatePendulum = () => {
       ethers.parseEther(String(newStartingPrice)),
       ethers.parseEther(String(newMinBidStep)),
       BigInt(newMinDuration),
-      BigInt(newBidExtension),
     ],
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);

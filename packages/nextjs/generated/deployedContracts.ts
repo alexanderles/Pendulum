@@ -5,7 +5,7 @@ const contracts = {
       chainId: "31337",
       contracts: {
         PendulumFactory: {
-          address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+          address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
           abi: [
             {
               inputs: [],
@@ -147,11 +147,6 @@ const contracts = {
                   type: "uint256",
                 },
                 {
-                  internalType: "uint256",
-                  name: "_auctionBidExtension",
-                  type: "uint256",
-                },
-                {
                   internalType: "address",
                   name: "_beneficiary",
                   type: "address",
@@ -160,6 +155,25 @@ const contracts = {
               name: "createPendulum",
               outputs: [],
               stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "key",
+                  type: "uint256",
+                },
+              ],
+              name: "getVersion",
+              outputs: [
+                {
+                  internalType: "address",
+                  name: "",
+                  type: "address",
+                },
+              ],
+              stateMutability: "view",
               type: "function",
             },
             {
@@ -318,7 +332,7 @@ const contracts = {
           ],
         },
         CreateProxy: {
-          address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+          address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
           abi: [
             {
               inputs: [
@@ -392,7 +406,7 @@ const contracts = {
           ],
         },
         Pendulum: {
-          address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+          address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
           abi: [
             {
               anonymous: false,
@@ -461,6 +475,31 @@ const contracts = {
                 },
               ],
               name: "ApprovalForAll",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: true,
+                  internalType: "uint256",
+                  name: "newStartingPrice",
+                  type: "uint256",
+                },
+                {
+                  indexed: true,
+                  internalType: "uint256",
+                  name: "newMinBidStep",
+                  type: "uint256",
+                },
+                {
+                  indexed: true,
+                  internalType: "uint256",
+                  name: "newMinDuration",
+                  type: "uint256",
+                },
+              ],
+              name: "AuctionParametersChanged",
               type: "event",
             },
             {
@@ -562,19 +601,6 @@ const contracts = {
               name: "approve",
               outputs: [],
               stateMutability: "nonpayable",
-              type: "function",
-            },
-            {
-              inputs: [],
-              name: "auctionBidExtension",
-              outputs: [
-                {
-                  internalType: "uint256",
-                  name: "",
-                  type: "uint256",
-                },
-              ],
-              stateMutability: "view",
               type: "function",
             },
             {
@@ -736,11 +762,6 @@ const contracts = {
                 {
                   internalType: "uint256",
                   name: "_auctionMinDuration",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "_auctionBidExtension",
                   type: "uint256",
                 },
                 {
@@ -953,11 +974,6 @@ const contracts = {
                 {
                   internalType: "uint256",
                   name: "newMinDuration",
-                  type: "uint256",
-                },
-                {
-                  internalType: "uint256",
-                  name: "newBidExtension",
                   type: "uint256",
                 },
               ],

@@ -1,10 +1,8 @@
 import { NextPage } from "next";
-import { CreatePendulum } from "~~/components/CreatePendulum";
+import { CreatePendulum } from "~~/components/writeChain/CreatePendulum";
 
 const Create: NextPage = () => {
-  return (
-    <CreatePendulum />
-  );
+  return <CreatePendulum />;
 };
 
 export default Create;

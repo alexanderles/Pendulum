@@ -1,15 +1,15 @@
 import { useState } from "react";
-import Button from "./Button";
-import FormItem from "./Forms/FormItem";
-import Input from "./Forms/Input";
+import Button from "../Button";
+import FormItem from "../Forms/FormItem";
+import Input from "../Forms/Input";
 import { ethers } from "ethers";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
 export const CreatePendulum = () => {
   const [topicName, setTopicName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
-  const [auctionStartingPrice, setAuctionStartingPrice] = useState("0");
-  const [auctionMinBidStep, setAuctionMinBidStep] = useState("0");
+  const [auctionStartingPrice, setAuctionStartingPrice] = useState(0);
+  const [auctionMinBidStep, setAuctionMinBidStep] = useState(0);
   const [auctionMinDuration, setAuctionMinDuration] = useState(0);
   const [beneficiary, setBeneficiary] = useState("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
 
@@ -24,10 +24,9 @@ export const CreatePendulum = () => {
       topicName,
       tokenSymbol,
       "",
-      BigInt(ethers.parseEther(String(auctionStartingPrice))),
-      BigInt(ethers.parseEther(String(auctionMinBidStep))),
-      BigInt(daysToSeconds(auctionMinDuration)),
-      BigInt(900),
+      BigInt(ethers.parseEther(auctionStartingPrice.toString()) || 0),
+      BigInt(ethers.parseEther(auctionMinBidStep.toString()) || 0),
+      BigInt(daysToSeconds(auctionMinDuration) || 0),
       beneficiary,
     ],
     //args: ["Account Abstraction", "AA", "", 1000000, 1000, 300, 400, beneficiary],
@@ -56,15 +55,15 @@ export const CreatePendulum = () => {
         </FormItem>
 
         <FormItem label="Auction Starting Price">
-          <Input placeholder="0.1" onChange={e => setAuctionStartingPrice(e.target.value)} />
+          <Input placeholder="0.1" onChange={e => setAuctionStartingPrice(e.target.value)} type="number" />
         </FormItem>
 
         <FormItem label="Auction Min Bid Increase">
-          <Input placeholder="0.05" onChange={e => setAuctionMinBidStep(e.target.value)} />
+          <Input placeholder="0.05" onChange={e => setAuctionMinBidStep(e.target.value)} type="number" />
         </FormItem>
 
-        <FormItem label="Auction Duration">
-          <Input placeholder="3 days" onChange={e => setAuctionMinDuration(e.target.value)} />
+        <FormItem label="Auction Duration (In Days)">
+          <Input placeholder="3" onChange={e => setAuctionMinDuration(e.target.value)} type="number" />
         </FormItem>
 
         <FormItem label="Creator Address">
