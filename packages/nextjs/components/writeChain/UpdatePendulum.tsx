@@ -8,7 +8,7 @@ import { ArrowSmallRightIcon } from "@heroicons/react/24/outline";
 import contracts from "~~/generated/deployedContracts";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 
-export const UpdatePendulum = () => {
+export const UpdatePendulum = ({ address }: { address?: string }) => {
   const [newStartingPrice, setNewStartingPrice] = useState(1);
   const [newMinBidStep, setNewMinBidStep] = useState(2);
   const [newMinDuration, setNewMinDuration] = useState(3);
@@ -30,6 +30,7 @@ export const UpdatePendulum = () => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
       console.log(txnReceipt);
     },
+    address: address,
   });
 
   // USING ETHERS FOR CALL

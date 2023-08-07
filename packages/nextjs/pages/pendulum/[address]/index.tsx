@@ -10,12 +10,14 @@ export default function Pendulum({ params }: any) {
     <div>
       <div>
         {typeof address === "string" && isAddress(address) ? ( // Check if address is a valid string
-          <PendulumPageCard address={address}></PendulumPageCard>
+          <div>
+            <PendulumPageCard address={address}></PendulumPageCard>
+            <UpdatePendulum address={address}></UpdatePendulum>
+          </div>
         ) : (
           <p>Invalid address</p> // Handle the case when address is undefined or an array
         )}
       </div>
-      <UpdatePendulum></UpdatePendulum>
     </div>
   );
 }
