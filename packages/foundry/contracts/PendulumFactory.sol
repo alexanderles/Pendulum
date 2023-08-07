@@ -7,6 +7,7 @@ import {ClonesUpgradeable} from "../lib/openzeppelin-contracts-upgradeable/contr
 import "./Pendulum.sol";
 import "./interfaces/IOwnershipTransferrable.sol";
 import {CreateProxy} from "./CreateProxy.sol";
+import "forge-std/console.sol";
 
 contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
     uint256 private constant _VERSION = 1;
@@ -57,10 +58,16 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
             _auctionBidExtension,
             _beneficiary
         );
+        console.log("CALL DATA");
+
+        Pendulum pendulum = new Pendulum();
         CreateProxy proxy = new CreateProxy(
-            versions[1], // May be issue with erc1967 upgradable
+            address(pendulum), // May be issue with erc1967 upgradable
             initializeCalldata
         );
+
+        console.log("PROXY ADDRESS:", address(proxy));
+
         pendulums[pendulumCount] = address(proxy);
         // IOwnershipTransferrable(pendulums[0]).transferOwnership(msg.sender);
 
@@ -82,7 +89,7 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
 
     /** Getter Methods */
 
-    function getVersion(uint256 key) public view returns(address) {
+    function getVersion(uint256 key) public view returns (address) {
         return versions[key];
     }
 }
