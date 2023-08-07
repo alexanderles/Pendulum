@@ -29,7 +29,7 @@ contract PendulumFactoryTest is Test {
         auctionStartingPrice = 0 ether; //set default to 0
         auctionMinBidStep = 0.05 ether; //set default to 0
         auctionMinDuration = 1 days; //set default to 1 days
-
+        validUntil = 30 days;
         beneficiary = msg.sender;
         validUntil = 5 days;
 
@@ -61,7 +61,8 @@ contract PendulumFactoryTest is Test {
             auctionStartingPrice,
             auctionMinBidStep,
             auctionMinDuration,
-            beneficiary
+            beneficiary,
+            validUntil
         );
 
         Pendulum pendulum1 = new Pendulum();
@@ -75,7 +76,8 @@ contract PendulumFactoryTest is Test {
             auctionStartingPrice,
             auctionMinBidStep,
             auctionMinDuration,
-            beneficiary
+            beneficiary,
+            validUntil
         );
 
         Pendulum pendulum2 = new Pendulum();
@@ -89,7 +91,8 @@ contract PendulumFactoryTest is Test {
             auctionStartingPrice,
             auctionMinBidStep,
             auctionMinDuration,
-            beneficiary
+            beneficiary,
+            validUntil
         );
 
         Pendulum pendulum3 = new Pendulum();

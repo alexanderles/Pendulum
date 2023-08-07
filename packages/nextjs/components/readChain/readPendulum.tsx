@@ -51,6 +51,12 @@ export const PendulumPageCard = ({ address }: { address?: string }) => {
     address,
   });
 
+  const { data: validUntil } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "validUntil",
+    address,
+  });
+
   const { data: leadingBidder } = useScaffoldContractRead({
     contractName: "Pendulum",
     functionName: "leadingBidder",
