@@ -60,7 +60,7 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
 
         Pendulum pendulum = new Pendulum();
         CreateProxy proxy = new CreateProxy(
-            address(pendulum), // May be issue with erc1967 upgradable
+            address(pendulum),
             initializeCalldata
         );
 

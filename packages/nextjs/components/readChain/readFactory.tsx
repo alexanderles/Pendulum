@@ -84,7 +84,7 @@ export const PendulumFactoryPageCard = () => {
       <div>
         {allPendulums.map((pendulum: any) => {
           return (
-            <div key={pendulum.toString()}>
+            <div>
               <PendulumPageCard address={pendulum}></PendulumPageCard>
             </div>
           );

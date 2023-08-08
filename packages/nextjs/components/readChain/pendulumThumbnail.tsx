@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { Ether } from "@uniswap/sdk-core";
 import { ethers } from "ethers";
 import Marquee from "react-fast-marquee";
 import { useAccount } from "wagmi";
+import { ArrowRightIcon, DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
 import {
   useAnimationConfig,
   useScaffoldContract,
@@ -13,7 +15,7 @@ import {
 
 const MARQUEE_PERIOD_IN_SEC = 5;
 
-export const PendulumPageCard = ({ address }: { address?: string }) => {
+export const PendulumThumbnail = ({ address }: { address?: string }) => {
   //   const { address } = useAccount();
   //   const [transitionEnabled, setTransitionEnabled] = useState(true);
   //   const [isRightDirection, setIsRightDirection] = useState(false);
@@ -25,23 +27,6 @@ export const PendulumPageCard = ({ address }: { address?: string }) => {
   const { data: pendulumName } = useScaffoldContractRead({
     contractName: "Pendulum",
     functionName: "name",
-    address,
-  });
-
-  const { data: auctionStartingPrice } = useScaffoldContractRead({
-    contractName: "Pendulum",
-    functionName: "auctionStartingPrice",
-    address,
-  });
-
-  const { data: auctionMinBidStep } = useScaffoldContractRead({
-    contractName: "Pendulum",
-    functionName: "auctionMinBidStep",
-    address,
-  });
-  const { data: auctionMinDuration } = useScaffoldContractRead({
-    contractName: "Pendulum",
-    functionName: "auctionMinDuration",
     address,
   });
 
@@ -105,46 +90,40 @@ export const PendulumPageCard = ({ address }: { address?: string }) => {
 
   return (
     <div className="flex flex-col justify-center items-center bg-[url('/assets/gradient-bg.png')] bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
-      <div>
-        <div>
-          <div>{pendulumName}</div>
-          <div>{address}</div>
-
-          {/* Starting price */}
-          <div>
-            {auctionStartingPrice ? (
-              ethers.formatEther(auctionStartingPrice?.toString()).toString()
-            ) : (
-              <>No Starting Price</>
-            )}
+      <div className="relative rounded-2xl shadow-lg w-72">
+        <img src="/purple-gradient-1.jpg" alt="NFT Title" className="object-cover rounded-2xl h-56" />
+        <div className="absolute top-0 left-0 p-2 rounded-tl-lg">
+          <div className="flex w-full justify-left items-center">
+            <div className="flex relative w-10 h-10 mr-2">
+              <Image alt="Profile" fill src={"/punkpfp1.jpg"} className="rounded-full" />
+            </div>
+            <div>Spencer Pen</div>
           </div>
-
-          {/* Minimum bid step */}
-          <div>
-            {auctionMinBidStep ? (
-              ethers.formatEther(auctionMinBidStep?.toString()).toString()
-            ) : (
-              <>No minimum bid step</>
-            )}
+        </div>
+        <div className="absolute bottom-0 left-0 p-2 pr-3 pl-3 bg-slate-100 text-stone-800 font-sans font-semibold rounded-tr-xl rounded-bl-2xl rounded-br-none rounded-tl-none">
+          <div className=" mb-2">
+            {pendulumName}
           </div>
-
-          {/* Minimum auction duration */}
-          <div>{auctionMinDuration ? secondsToDhms(Number(auctionMinDuration)) : <>No minimum auction duration</>}</div>
-
-          {/* Time until end of auction */}
-          <div>{auctionEndTime ? secondsToDhms(Number(auctionEndTime)) : <>No auction end time</>}</div>
-
-          {/* Leading bidder */}
           <div>
-            {leadingBidder && ethers.getAddress(leadingBidder) != ethers.ZeroAddress ? (
-              ethers.getAddress(leadingBidder)
-            ) : (
-              <>No leading bidder</>
-            )}
+            <span>Price: </span>
+            <span className="text-green-600">1.5 ETH</span>
           </div>
-
-          {/* Leading bid */}
-          <div>{leadingBid ? ethers.formatEther(leadingBid?.toString()).toString() : <>No leading bid</>}</div>
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center rounded-2xl">
+          <div className="bg-black bg-opacity-50 p-2 w-2/3 rounded-xl grid grid-cols-3">
+            <div className="text-2xs justify-center">
+                <p className="mt-0 mb-1">Stops</p>
+                <p className="mb-0 mt-1">7 Days</p>
+            </div>
+            <div className="text-2xs justify-center">
+                <p className="mt-0 mb-1">Breaks</p>
+                <p className="mb-0 mt-1">4 weeks</p>
+            </div>
+            <div className="text-2xs justify-center">
+                <p className="mt-0 mb-1">Recharge</p>
+                <p className="mb-0 mt-1">7% /week</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

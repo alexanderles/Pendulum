@@ -15,6 +15,7 @@ contract PendulumFactoryTest is Test {
     uint256 public auctionStartingPrice;
     uint256 public auctionMinBidStep;
     uint256 public auctionMinDuration;
+    uint256 public validUntil;
 
     address public beneficiary;
 
@@ -30,6 +31,7 @@ contract PendulumFactoryTest is Test {
         auctionMinDuration = 1 days; //set default to 1 days
 
         beneficiary = msg.sender;
+        validUntil = 5 days;
 
         pendulumFactory = new PendulumFactory();
         console.log("Pendulum Factory Impl:", address(pendulumFactory));
