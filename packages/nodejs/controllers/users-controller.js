@@ -12,6 +12,11 @@ const UsersController = (app) => {
         res.json(user);
     };
 
+    const findUserByUsername = async(req, res) => {
+        const user = await dao.findUserByUsername(req.params.username);
+        res.json(user);
+    };
+
     const register = async(req, res) => {
         const user = req.body;
         const existingUser = await dao.findUserByUsername(user.username);
@@ -74,7 +79,6 @@ const UsersController = (app) => {
     app.get("/api/users", findAllUsers);
     app.get("/api/users/username/:username", findUserByUsername);
     app.get("/api/users/:id", findUserById);
-    app.post("/api/users", createUser);
     app.put("/api/users/:id", updateUser);
     app.delete("/api/users/:id", deleteUser);
 
