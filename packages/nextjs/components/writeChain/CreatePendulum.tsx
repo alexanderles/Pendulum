@@ -20,6 +20,7 @@ export const CreatePendulum = () => {
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "PendulumFactory",
     functionName: "createPendulum",
+    gas: 10_000_000n,
     args: [
       topicName,
       tokenSymbol,
