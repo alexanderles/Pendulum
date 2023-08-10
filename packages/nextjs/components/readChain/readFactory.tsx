@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../Button";
 import FormItem from "../Forms/FormItem";
 import Input from "../Forms/Input";
-import { PendulumPageCard } from "./readPendulum";
+import { PendulumThumbnail } from "./pendulumThumbnail";
+// import { PendulumPageCard } from "./readPendulum";
 import Marquee from "react-fast-marquee";
 import { useAccount } from "wagmi";
 import {
@@ -85,7 +86,8 @@ export const PendulumFactoryPageCard = () => {
         {allPendulums.map((pendulum: any) => {
           return (
             <div>
-              <PendulumPageCard address={pendulum}></PendulumPageCard>
+              <PendulumThumbnail address={pendulum}></PendulumThumbnail>
+              {/* <PendulumPageCard address={pendulum}></PendulumPageCard> */}
             </div>
           );
         })}
