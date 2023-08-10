@@ -1,12 +1,14 @@
 import { ImgHTMLAttributes, useMemo } from "react";
-import Ethers from "@typechain/ethers-v5";
-import { ethers } from "ethers";
+import { useRouter } from "next/router";
+import { BigNumberish, ethers } from "ethers";
 import { minidenticon } from "minidenticons";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth/useScaffoldContractRead";
 import { formatEthereumAddress } from "~~/utils/pendulumUtis";
 import { secondsToDhms } from "~~/utils/pendulumUtis";
 
 export const PendulumThumbnail = ({ address }: { address?: string }) => {
+  const router = useRouter();
+
   interface IdentityIconProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
     username: string;
     saturation?: string | number;
@@ -22,12 +24,6 @@ export const PendulumThumbnail = ({ address }: { address?: string }) => {
   const { data: auctionStartingPrice } = useScaffoldContractRead({
     contractName: "Pendulum",
     functionName: "auctionStartingPrice",
-    address,
-  });
-
-  const { data: auctionMinBidStep } = useScaffoldContractRead({
-    contractName: "Pendulum",
-    functionName: "auctionMinBidStep",
     address,
   });
   const { data: auctionMinDuration } = useScaffoldContractRead({
@@ -75,9 +71,13 @@ export const PendulumThumbnail = ({ address }: { address?: string }) => {
     return <img src={svgURI} alt={username} {...props} />;
   };
 
+  const handlePendulumOnClick = () => {
+    router.push("/pendulum/[address]", `/pendulum/${address}`);
+  };
+
   return (
-    <div className="flex flex-col justify-center items-center bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
-      <div className="relative rounded-2xl shadow-lg w-72">
+    <div className="flex flex-col justify-center items-center bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw]">
+      <div className="hover:cursor-pointer relative rounded-2xl shadow-lg w-72" onClick={handlePendulumOnClick}>
         <img src="/purple-gradient-1.jpg" alt="NFT Title" className="object-cover rounded-2xl h-56" />
         <div className="absolute top-0 left-0 p-2 rounded-tl-lg">
           <div className="flex w-full justify-left items-center">
@@ -100,11 +100,11 @@ export const PendulumThumbnail = ({ address }: { address?: string }) => {
           <div className="flex">
             <div className="flex flex-col mr-8">
               <span className="text-stone-500 font-normal">Min Bid</span>
-              <span className="text-green-600"> {ethers.formatEther(minimumBid)} ETH</span>
+              <span className="text-green-600"> {ethers.formatEther(minimumBid?.toString())} ETH</span>
             </div>
             <div className="self-end ml-4">
               <span className="text-stone-500 font-normal">Base:</span>
-              <span className="text-green-600"> {ethers.formatEther(auctionStartingPrice)} ETH</span>
+              <span className="text-green-600"> {ethers.formatEther(auctionStartingPrice?.toString())} ETH</span>
             </div>
           </div>
         </div>

@@ -72,7 +72,7 @@ export const PendulumFactoryPageCard = () => {
   console.log("PendulumFactory: ", PendulumFactory);
 
   return (
-    <div className="flex flex-col justify-center items-center bg-[url('/assets/gradient-bg.png')] bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
+    <div className="flex flex-col justify-center items-center bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
       <h1>Pendulums Created: {PendulumCount?.toString()}</h1>
       <div>
         <FormItem label="Get a pendulum with it's count">
