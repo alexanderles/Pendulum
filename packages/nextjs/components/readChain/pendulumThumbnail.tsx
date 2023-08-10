@@ -1,28 +1,19 @@
-import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-import { Ether } from "@uniswap/sdk-core";
-import { ethers } from "ethers";
-import Marquee from "react-fast-marquee";
-import { useAccount } from "wagmi";
-import { ArrowRightIcon, DevicePhoneMobileIcon } from "@heroicons/react/24/outline";
-import {
-  useAnimationConfig,
-  useScaffoldContract,
-  useScaffoldContractRead,
-  useScaffoldEventHistory,
-  useScaffoldEventSubscriber,
-} from "~~/hooks/scaffold-eth";
-
-const MARQUEE_PERIOD_IN_SEC = 5;
+import { ImgHTMLAttributes, useMemo } from "react";
+import { useRouter } from "next/router";
+import { BigNumberish, ethers } from "ethers";
+import { minidenticon } from "minidenticons";
+import { useScaffoldContractRead } from "~~/hooks/scaffold-eth/useScaffoldContractRead";
+import { formatEthereumAddress } from "~~/utils/pendulumUtis";
+import { secondsToDhms } from "~~/utils/pendulumUtis";
 
 export const PendulumThumbnail = ({ address }: { address?: string }) => {
-  //   const { address } = useAccount();
-  //   const [transitionEnabled, setTransitionEnabled] = useState(true);
-  //   const [isRightDirection, setIsRightDirection] = useState(false);
-  //   const [marqueeSpeed, setMarqueeSpeed] = useState(0);
+  const router = useRouter();
 
-  //   const containerRef = useRef<HTMLDivElement>(null);
-  //   const greetingRef = useRef<HTMLDivElement>(null);
+  interface IdentityIconProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
+    username: string;
+    saturation?: string | number;
+    lightness?: string | number;
+  }
 
   const { data: pendulumName } = useScaffoldContractRead({
     contractName: "Pendulum",
@@ -30,9 +21,26 @@ export const PendulumThumbnail = ({ address }: { address?: string }) => {
     address,
   });
 
+  const { data: auctionStartingPrice } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "auctionStartingPrice",
+    address,
+  });
+  const { data: auctionMinDuration } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "auctionMinDuration",
+    address,
+  });
+
   const { data: auctionEndTime } = useScaffoldContractRead({
     contractName: "Pendulum",
     functionName: "auctionEndTime",
+    address,
+  });
+
+  const { data: validUntil } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "validUntil",
     address,
   });
 
@@ -47,81 +55,73 @@ export const PendulumThumbnail = ({ address }: { address?: string }) => {
     address,
   });
 
-  function secondsToDhms(seconds: number) {
-    var d = Math.floor(seconds / (3600 * 24));
-    var h = Math.floor((seconds % (3600 * 24)) / 3600);
-    var m = Math.floor((seconds % 3600) / 60);
-    var s = Math.floor(seconds % 60);
-
-    var dDisplay = d > 0 ? d + (d == 1 ? " day, " : " days, ") : "";
-    var hDisplay = h > 0 ? h + (h == 1 ? " hour, " : " hours, ") : "";
-    var mDisplay = m > 0 ? m + (m == 1 ? " minute, " : " minutes, ") : "";
-    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
-    return dDisplay + hDisplay + mDisplay + sDisplay;
-  }
-
-  useScaffoldEventSubscriber({
+  const { data: minimumBid } = useScaffoldContractRead({
     contractName: "Pendulum",
-    eventName: "AuctionParametersChanged",
-    listener: logs => {
-      logs.map(log => {
-        const { newStartingPrice, newMinBidStep, newMinDuration } = log.args;
-        console.log("📡 Auction Parameters Changed", newStartingPrice, newMinBidStep, newMinDuration);
-      });
-    },
+    functionName: "minimumBid",
+    address,
   });
 
-  const {
-    data: auctionParametersChanged,
-    isLoading: isLoadingEvents,
-    error: errorReadingEvents,
-  } = useScaffoldEventHistory({
-    contractName: "Pendulum",
-    eventName: "AuctionParametersChanged",
-    fromBlock: process.env.NEXT_PUBLIC_DEPLOY_BLOCK ? BigInt(process.env.NEXT_PUBLIC_DEPLOY_BLOCK) : 0n,
-    //filters: { newStartingPrice: BigInt, newMinBidStep: BigInt, newMinDuration: BigInt },
-    blockData: true,
-  });
+  const getAddress = formatEthereumAddress(address);
 
-  console.log("Events:", isLoadingEvents, errorReadingEvents, auctionParametersChanged);
+  const MinidenticonImg: React.FC<IdentityIconProps> = ({ username, saturation, lightness, ...props }) => {
+    const svgURI = useMemo(
+      () => "data:image/svg+xml;utf8," + encodeURIComponent(minidenticon(username, saturation, lightness)),
+      [username, saturation, lightness],
+    );
+    return <img src={svgURI} alt={username} {...props} />;
+  };
 
-  const { data: pendulum } = useScaffoldContract({ contractName: "Pendulum" });
-  console.log("Pendulum: ", pendulum);
+  const handlePendulumOnClick = () => {
+    router.push("/pendulum/[address]", `/pendulum/${address}`);
+  };
 
   return (
-    <div className="flex flex-col justify-center items-center bg-[url('/assets/gradient-bg.png')] bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
-      <div className="relative rounded-2xl shadow-lg w-72">
+    <div className="flex flex-col justify-center items-center bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw]">
+      <div className="hover:cursor-pointer relative rounded-2xl shadow-lg w-72" onClick={handlePendulumOnClick}>
         <img src="/purple-gradient-1.jpg" alt="NFT Title" className="object-cover rounded-2xl h-56" />
         <div className="absolute top-0 left-0 p-2 rounded-tl-lg">
           <div className="flex w-full justify-left items-center">
             <div className="flex relative w-10 h-10 mr-2">
-              <Image alt="Profile" fill src={"/punkpfp1.jpg"} className="rounded-full" />
+              <MinidenticonImg
+                username={address ? address : "Default"}
+                saturation="90"
+                width="150"
+                height="150"
+                className="rounded-full"
+              />
             </div>
-            <div>Spencer Pen</div>
+            <div>{getAddress}</div>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 p-2 pr-3 pl-3 bg-slate-100 text-stone-800 font-sans font-semibold rounded-tr-xl rounded-bl-2xl rounded-br-none rounded-tl-none">
-          <div className=" mb-2">
-            {pendulumName}
-          </div>
-          <div>
-            <span>Price: </span>
-            <span className="text-green-600">1.5 ETH</span>
+
+        <div className="absolute bottom-0 left-0 p-2 pr-3 pl-3 bg-slate-100 text-stone-800 font-sans font-semibold rounded-tr-xl rounded-bl-2xl rounded-br-2xl rounded-tl-none translate-y-8">
+          <div className=" mb-2">{pendulumName}</div>
+
+          <div className="flex">
+            <div className="flex flex-col mr-8">
+              <span className="text-stone-500 font-normal">Min Bid</span>
+              <span className="text-green-600"> {ethers.formatEther(minimumBid?.toString())} ETH</span>
+            </div>
+            <div className="self-end ml-4">
+              <span className="text-stone-500 font-normal">Base:</span>
+              <span className="text-green-600"> {ethers.formatEther(auctionStartingPrice?.toString())} ETH</span>
+            </div>
           </div>
         </div>
+
         <div className="absolute inset-0 flex items-center justify-center rounded-2xl">
           <div className="bg-black bg-opacity-50 p-2 w-2/3 rounded-xl grid grid-cols-3">
             <div className="text-2xs justify-center">
-                <p className="mt-0 mb-1">Stops</p>
-                <p className="mb-0 mt-1">7 Days</p>
+              <p className="mt-0 mb-1">Stops</p>
+              <p className="mb-0 mt-1">7 Days</p>
             </div>
             <div className="text-2xs justify-center">
-                <p className="mt-0 mb-1">Breaks</p>
-                <p className="mb-0 mt-1">4 weeks</p>
+              <p className="mt-0 mb-1">Breaks</p>
+              <p className="mb-0 mt-1">{secondsToDhms(Number(validUntil))}</p>
             </div>
             <div className="text-2xs justify-center">
-                <p className="mt-0 mb-1">Recharge</p>
-                <p className="mb-0 mt-1">7% /week</p>
+              <p className="mt-0 mb-1">Recharge</p>
+              <p className="mb-0 mt-1">7% /week</p>
             </div>
           </div>
         </div>

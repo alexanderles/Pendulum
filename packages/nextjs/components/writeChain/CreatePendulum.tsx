@@ -12,7 +12,7 @@ export const CreatePendulum = () => {
   const [auctionMinBidStep, setAuctionMinBidStep] = useState(0);
   const [auctionMinDuration, setAuctionMinDuration] = useState(0);
   const [beneficiary, setBeneficiary] = useState("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
-
+  const [validUntil, setValidUntil] = useState(0);
   function daysToSeconds(days: number) {
     return days * 24 * 60 * 60;
   }
@@ -20,6 +20,7 @@ export const CreatePendulum = () => {
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "PendulumFactory",
     functionName: "createPendulum",
+    gas: 10_000_000n,
     args: [
       topicName,
       tokenSymbol,
@@ -28,6 +29,7 @@ export const CreatePendulum = () => {
       BigInt(ethers.parseEther(auctionMinBidStep.toString()) || 0),
       BigInt(daysToSeconds(auctionMinDuration) || 0),
       beneficiary,
+      BigInt(daysToSeconds(validUntil) || 0),
     ],
     //args: ["Account Abstraction", "AA", "", 1000000, 1000, 300, 400, beneficiary],
     onBlockConfirmation: txnReceipt => {
@@ -71,6 +73,10 @@ export const CreatePendulum = () => {
             placeholder="0x5621b3d8C7F87E833430ed5c9Ff1896630821139"
             onChange={e => setBeneficiary(e.target.value)}
           />
+        </FormItem>
+
+        <FormItem label="Auction Duration (In Days)">
+          <Input placeholder="30" onChange={e => setValidUntil(e.target.value)} type="number" />
         </FormItem>
 
         <Button type="submit" className={`${isLoading ? "loading" : ""}`} onClick={() => writeAsync()}>

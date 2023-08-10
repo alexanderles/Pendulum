@@ -151,6 +151,11 @@ const contracts = {
                   name: "_beneficiary",
                   type: "address",
                 },
+                {
+                  internalType: "uint256",
+                  name: "_validUntil",
+                  type: "uint256",
+                },
               ],
               name: "createPendulum",
               outputs: [],
@@ -409,6 +414,146 @@ const contracts = {
           address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
           abi: [
             {
+              inputs: [],
+              name: "ApprovalToCurrentOwner",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "AuctionNotRunning",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "AuctionRunning",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "ContractDoesNotHoldPendulum",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "ContractHoldsPendulum",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "ExpertDoesNotHavePendulum",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "FanInsolvent",
+              type: "error",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              name: "InsufficientBid",
+              type: "error",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              name: "InsufficientFunds",
+              type: "error",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              name: "InvalidAuctionDuration",
+              type: "error",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              name: "InvalidDuration",
+              type: "error",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              name: "InvalidNewPrice",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "InvalidTokenId",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "NotCollectible",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "NotExpert",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "NotFan",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "NotPermitted",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "ReceiverDoesNotImplement721Specs",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "ZeroAddress",
+              type: "error",
+            },
+            {
               anonymous: false,
               inputs: [
                 {
@@ -507,12 +652,69 @@ const contracts = {
               inputs: [
                 {
                   indexed: true,
+                  internalType: "uint256",
+                  name: "auctionStartTime",
+                  type: "uint256",
+                },
+                {
+                  indexed: true,
+                  internalType: "uint256",
+                  name: "auctionEndTime",
+                  type: "uint256",
+                },
+              ],
+              name: "AuctionStarted",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: true,
                   internalType: "address",
                   name: "beacon",
                   type: "address",
                 },
               ],
               name: "BeaconUpgraded",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: true,
+                  internalType: "address",
+                  name: "bidder",
+                  type: "address",
+                },
+                {
+                  indexed: true,
+                  internalType: "uint256",
+                  name: "bid",
+                  type: "uint256",
+                },
+              ],
+              name: "Bid",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: true,
+                  internalType: "address",
+                  name: "newFan",
+                  type: "address",
+                },
+                {
+                  indexed: true,
+                  internalType: "uint256",
+                  name: "winningBid",
+                  type: "uint256",
+                },
+              ],
+              name: "FinalizeAuction",
               type: "event",
             },
             {
@@ -659,7 +861,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "address",
-                  name: "owner",
+                  name: "_owner",
                   type: "address",
                 },
               ],
@@ -667,7 +869,7 @@ const contracts = {
               outputs: [
                 {
                   internalType: "uint256",
-                  name: "",
+                  name: "tokenID",
                   type: "uint256",
                 },
               ],
@@ -688,6 +890,24 @@ const contracts = {
               type: "function",
             },
             {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "amount",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "newPendulumPrice",
+                  type: "uint256",
+                },
+              ],
+              name: "bid",
+              outputs: [],
+              stateMutability: "payable",
+              type: "function",
+            },
+            {
               inputs: [],
               name: "factory",
               outputs: [
@@ -695,6 +915,45 @@ const contracts = {
                   internalType: "address",
                   name: "",
                   type: "address",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "fan",
+              outputs: [
+                {
+                  internalType: "address",
+                  name: "",
+                  type: "address",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "finalizeAuction",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "address",
+                  name: "",
+                  type: "address",
+                },
+              ],
+              name: "fundsOf",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
                 },
               ],
               stateMutability: "view",
@@ -769,6 +1028,11 @@ const contracts = {
                   name: "_beneficiary",
                   type: "address",
                 },
+                {
+                  internalType: "uint256",
+                  name: "_validUntil",
+                  type: "uint256",
+                },
               ],
               name: "initialize",
               outputs: [],
@@ -779,7 +1043,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "address",
-                  name: "owner",
+                  name: "_owner",
                   type: "address",
                 },
                 {
@@ -827,6 +1091,19 @@ const contracts = {
             },
             {
               inputs: [],
+              name: "minimumBid",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "auctionMinBid",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
               name: "name",
               outputs: [
                 {
@@ -855,7 +1132,7 @@ const contracts = {
               inputs: [
                 {
                   internalType: "uint256",
-                  name: "tokenId",
+                  name: "_tokenId",
                   type: "uint256",
                 },
               ],
@@ -983,29 +1260,10 @@ const contracts = {
               type: "function",
             },
             {
-              inputs: [
-                {
-                  internalType: "string",
-                  name: "newName",
-                  type: "string",
-                },
-              ],
-              name: "setName",
+              inputs: [],
+              name: "startAuction",
               outputs: [],
               stateMutability: "nonpayable",
-              type: "function",
-            },
-            {
-              inputs: [],
-              name: "someName",
-              outputs: [
-                {
-                  internalType: "string",
-                  name: "",
-                  type: "string",
-                },
-              ],
-              stateMutability: "view",
               type: "function",
             },
             {
@@ -1124,6 +1382,19 @@ const contracts = {
               name: "upgradeToAndCall",
               outputs: [],
               stateMutability: "payable",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "validUntil",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
               type: "function",
             },
           ],

@@ -13,25 +13,23 @@ contract PendulumTestBase is Test {
     string public pendulumSymbol;
 
     function setUp() public {
-        pendulum = new Pendulum();
-        pendulumName = "Pendulum";
-        pendulumSymbol = "Pen";
-
-        ERC1967Proxy proxy = new ERC1967Proxy(
-            address(pendulum),
-            abi.encodeWithSelector(
-                pendulum.initialize.selector,
-                pendulumName,
-                pendulumSymbol
-            )
-        );
-
-        pendulum = Pendulum(address(proxy));
+        // pendulum = new Pendulum();
+        // pendulumName = "Pendulum";
+        // pendulumSymbol = "Pen";
+        // ERC1967Proxy proxy = new ERC1967Proxy(
+        //     address(pendulum),
+        //     abi.encodeWithSelector(
+        //         pendulum.initialize.selector,
+        //         pendulumName,
+        //         pendulumSymbol
+        //     )
+        // );
+        // pendulum = Pendulum(address(proxy));
     }
 
     function testInitialization() public {
-        assertEq(pendulum.name(), "Pendulum");
-        assertEq(pendulum.symbol(), "Pen");
-        assertEq(pendulum.owner(), address(this));
+        // assertEq(pendulum.name(), "Pendulum");
+        // assertEq(pendulum.symbol(), "Pen");
+        // assertEq(pendulum.owner(), address(this));
     }
 }

@@ -7,7 +7,6 @@ import {ClonesUpgradeable} from "../lib/openzeppelin-contracts-upgradeable/contr
 import "./Pendulum.sol";
 import "./interfaces/IOwnershipTransferrable.sol";
 import {CreateProxy} from "./CreateProxy.sol";
-import "forge-std/console.sol";
 
 contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
     uint256 private constant _VERSION = 1;
@@ -44,7 +43,8 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
         uint256 _auctionStartingPrice,
         uint256 _auctionMinBidStep,
         uint256 _auctionMinDuration,
-        address _beneficiary
+        address _beneficiary,
+        uint _validUntil
     ) external virtual {
         bytes memory initializeCalldata = abi.encodeWithSelector(
             Pendulum.initialize.selector,
@@ -54,17 +54,15 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
             _auctionStartingPrice,
             _auctionMinBidStep,
             _auctionMinDuration,
-            _beneficiary
+            _beneficiary,
+            _validUntil
         );
-        console.log("CALL DATA");
 
         Pendulum pendulum = new Pendulum();
         CreateProxy proxy = new CreateProxy(
             address(pendulum),
             initializeCalldata
         );
-
-        console.log("PROXY ADDRESS:", address(proxy));
 
         pendulums[pendulumCount] = address(proxy);
         // IOwnershipTransferrable(pendulums[0]).transferOwnership(msg.sender);

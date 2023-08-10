@@ -18,6 +18,7 @@ contract DeployScript is ScaffoldETHDeploy {
     uint256 public auctionMinDuration;
 
     address public beneficiary;
+    uint public validUntil;
 
     Pendulum public pendulum;
     PendulumFactory public pendulumFactory;
@@ -29,8 +30,8 @@ contract DeployScript is ScaffoldETHDeploy {
         auctionStartingPrice = 0 ether; //set default to 0
         auctionMinBidStep = 0.05 ether; //set default to 0
         auctionMinDuration = 1 days; //set default to 1 days
-
         beneficiary = msg.sender;
+        validUntil = 30 days;
 
         uint256 deployerPrivateKey = setupLocalhostEnv();
 
@@ -54,26 +55,19 @@ contract DeployScript is ScaffoldETHDeploy {
 
         pendulumFactory.registerVersion(1, address(pendulum));
         console.log("Version registered");
-        // pendulumFactory.createPendulum(
-        //     name,
-        //     symbol,
-        //     tokenURI,
-        //     auctionStartingPrice,
-        //     auctionMinBidStep,
-        //     auctionMinDuration,
-        //     auctionBidExtension,
-        //     beneficiary
-        // );
+        pendulumFactory.createPendulum(
+            name,
+            symbol,
+            tokenURI,
+            auctionStartingPrice,
+            auctionMinBidStep,
+            auctionMinDuration,
+            beneficiary,
+            validUntil
+        );
 
-        // pendulum = Pendulum(pendulumFactory.pendulums(0));
-        // console.log("Pendulum: ", address(pendulum));
-
-        // ERC1967Proxy proxy = new ERC1967Proxy(
-        //     address(pendulum),
-
-        // );
-        // pendulum = Pendulum(address(proxy));
-        // console.log("Pendulum:", address(pendulum));
+        pendulum = Pendulum(pendulumFactory.pendulums(0));
+        console.log("Pendulum:", address(pendulum));
 
         vm.stopBroadcast();
 

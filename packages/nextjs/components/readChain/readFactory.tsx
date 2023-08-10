@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import Button from "../Button";
 import FormItem from "../Forms/FormItem";
 import Input from "../Forms/Input";
-import { PendulumPageCard } from "./readPendulum";
+import { PendulumThumbnail } from "./pendulumThumbnail";
+// import { PendulumPageCard } from "./readPendulum";
 import Marquee from "react-fast-marquee";
 import { useAccount } from "wagmi";
 import {
@@ -71,7 +72,7 @@ export const PendulumFactoryPageCard = () => {
   console.log("PendulumFactory: ", PendulumFactory);
 
   return (
-    <div className="flex flex-col justify-center items-center bg-[url('/assets/gradient-bg.png')] bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
+    <div className="flex flex-col justify-center items-center bg-[length:100%_100%] py-10 px-5 sm:px-0 lg:py-auto max-w-[100vw] ">
       <h1>Pendulums Created: {PendulumCount?.toString()}</h1>
       <div>
         <FormItem label="Get a pendulum with it's count">
@@ -85,7 +86,8 @@ export const PendulumFactoryPageCard = () => {
         {allPendulums.map((pendulum: any) => {
           return (
             <div>
-              <PendulumPageCard address={pendulum}></PendulumPageCard>
+              <PendulumThumbnail address={pendulum}></PendulumThumbnail>
+              {/* <PendulumPageCard address={pendulum}></PendulumPageCard> */}
             </div>
           );
         })}

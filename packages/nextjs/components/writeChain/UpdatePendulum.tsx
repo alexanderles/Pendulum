@@ -9,7 +9,6 @@ export const UpdatePendulum = ({ address }: { address?: string }) => {
   const [newStartingPrice, setNewStartingPrice] = useState(1);
   const [newMinBidStep, setNewMinBidStep] = useState(2);
   const [newMinDuration, setNewMinDuration] = useState(3);
-  const [newBidExtension, setNewBidExtension] = useState(4);
 
   function daysToSeconds(days: number) {
     return days * 24 * 60 * 60;
@@ -21,7 +20,7 @@ export const UpdatePendulum = ({ address }: { address?: string }) => {
     args: [
       ethers.parseEther(String(newStartingPrice)),
       ethers.parseEther(String(newMinBidStep)),
-      BigInt(newMinDuration),
+      BigInt(daysToSeconds(newMinDuration)),
     ],
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
@@ -52,10 +51,6 @@ export const UpdatePendulum = ({ address }: { address?: string }) => {
 
         <FormItem label="New Min Duration">
           <Input placeholder="11" onChange={e => setNewMinDuration(e.target.value)} />
-        </FormItem>
-
-        <FormItem label="New Bid Extension">
-          <Input placeholder="20" onChange={e => setNewBidExtension(e.target.value)} />
         </FormItem>
 
         <Button type="submit" className={`${isLoading ? "loading" : ""}`} onClick={() => writeAsync()}>
