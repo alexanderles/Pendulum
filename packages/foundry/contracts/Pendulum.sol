@@ -8,11 +8,11 @@ contract Pendulum is ERC721P, IPendulum {
     // CONSTANT
     uint256 private constant _VERSION = 1;
 
-    //uint256 internal constant _FEE_DENOMINATOR = 100_00;
+    uint256 internal constant _FEE_DENOMINATOR = 100_00;
 
-    //uint256 internal constant _TAX_PERIOD = 7 days; // can make minimum 1 day
+    uint256 internal constant _TAX_PERIOD = 7 days; // can make minimum 1 day
 
-    //uint256 internal constant _MAXIMUM_DURATION = 365 days;
+    uint256 internal constant _MAXIMUM_DURATION = 365 days;
 
     uint256 internal constant _MAXIMUM_PRICE = 2 ** 128;
 
@@ -23,6 +23,10 @@ contract Pendulum is ERC721P, IPendulum {
     address public beneficiary; // TODO prolly don't need this
     address public leadingBidder;
 
+    // Fee Variables
+    uint256 public tax;
+    uint256 public saleRoyalty;
+
     // Auction Parameters
     uint256 public auctionStartingPrice;
     uint256 public auctionMinBidStep;
@@ -31,7 +35,25 @@ contract Pendulum is ERC721P, IPendulum {
     uint256 public auctionEndTime;
 
     uint256 public leadingBid;
+
+    // Pendulum Parameters
+    /// how often the Pendulum can be invoked.
+
+    uint256 public responsePeriod;
+    uint256 public lastSettlementTime;
+    uint256 public lastInvocationTime;
+    uint256 public questionFrequency;
+    uint256 public ratingPeriod = 7 days; //TODO thinking this is a good val to have. Can make it default
+    /// Fan receive time: when the Orb was last transferred, except to this contract.
+    uint256 public fanReceiveTime;
+    // need system to store rating
+    uint256 public price;
+    uint256 public questionTextLength; // TODO what's optimal char length? 280, 500?
+
     mapping(address => uint256) public fundsOf;
+
+    /// Gap used to prevent storage collisions.
+    uint256[50] private __gap;
 
     // This function will be called by parent class to initialize the ERC721
     function initialize(
@@ -42,7 +64,10 @@ contract Pendulum is ERC721P, IPendulum {
         uint256 _auctionMinBidStep, //set default to 0
         uint256 _auctionMinDuration, //set default to 1 days, acts as end time
         address _beneficiary,
-        uint256 _validUntil
+        uint256 _validUntil,
+        uint256 _questionFrequency,
+        uint256 _tax,
+        uint256 _saleRoyalty
     ) external initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
@@ -54,6 +79,10 @@ contract Pendulum is ERC721P, IPendulum {
         auctionMinBidStep = _auctionMinBidStep;
         auctionMinDuration = _auctionMinDuration;
         // auctionKeeperMinimumDuration = 1 days; TODO same as auctionMinDuration
+
+        questionFrequency = _questionFrequency;
+        tax = _tax;
+        saleRoyalty = _saleRoyalty;
 
         // addresses
         beneficiary = _beneficiary;
@@ -82,6 +111,89 @@ contract Pendulum is ERC721P, IPendulum {
             revert AuctionRunning();
         }
         _;
+    }
+    modifier onlyFanSolvent() virtual {
+        if (!fanSolvent()) {
+            revert FanInsolvent();
+        }
+        _;
+    }
+
+    function deposit() external payable virtual {
+        if (msg.sender == fan && !fanSolvent()) {
+            revert FanInsolvent();
+        }
+        fundsOf[msg.sender] += msg.value;
+    }
+
+    function fanSolvent() public view returns (bool) {
+        if (owner() == fan) {
+            return true;
+        }
+
+        return fundsOf[fan] >= _owedSinceLastSettlement();
+    }
+
+    function _owedSinceLastSettlement() internal view returns (uint) {
+        uint256 secondsSinceLastSettlement = block.timestamp -
+            lastSettlementTime;
+        return
+            (price * tax * secondsSinceLastSettlement) /
+            (_TAX_PERIOD * _FEE_DENOMINATOR);
+    }
+
+    function setPrice(uint256 newPrice) external virtual onlyFanSolvent {
+        _settle();
+        _setPrice(newPrice);
+    }
+
+    function _settle() internal virtual {
+        if (owner() == fan) {
+            lastSettlementTime = block.timestamp;
+            return;
+        }
+
+        uint256 availableFunds = fundsOf[fan];
+        uint256 owedFunds = _owedSinceLastSettlement();
+        uint256 transferableToBeneficiary = availableFunds <= owedFunds
+            ? availableFunds
+            : owedFunds;
+
+        fundsOf[fan] -= transferableToBeneficiary;
+        fundsOf[beneficiary] += transferableToBeneficiary;
+
+        lastSettlementTime = block.timestamp;
+
+        emit Settlement(fan, beneficiary, transferableToBeneficiary);
+    }
+
+    function _setPrice(uint newPrice) internal virtual {
+        if (newPrice > _MAXIMUM_PRICE) {
+            revert InvalidNewPrice(newPrice);
+        }
+        price = newPrice;
+    }
+
+    function withdrawAll() external virtual {
+        _withdraw(msg.sender, fundsOf[msg.sender]);
+    }
+
+    function withdraw(uint256 _amount) external virtual {
+        _withdraw(msg.sender, _amount);
+    }
+
+    function _withdraw(address _recipient, uint256 _amount) private {
+        if (_recipient == leadingBidder) {
+            revert NotPermittedForLeadingBidder();
+        }
+
+        if (fundsOf[_recipient] < _amount) {
+            revert InsufficientFunds(fundsOf[_recipient], _amount);
+        }
+
+        fundsOf[_recipient] -= _amount;
+
+        AddressUpgradeable.sendValue(payable(_recipient), _amount);
     }
 
     // only allows expert to start the auction.

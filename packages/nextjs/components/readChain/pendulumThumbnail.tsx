@@ -1,6 +1,6 @@
 import { ImgHTMLAttributes, useMemo } from "react";
 import { useRouter } from "next/router";
-import { BigNumberish, ethers } from "ethers";
+import { ethers } from "ethers";
 import { minidenticon } from "minidenticons";
 import { useScaffoldContractRead } from "~~/hooks/scaffold-eth/useScaffoldContractRead";
 import { formatEthereumAddress } from "~~/utils/pendulumUtis";

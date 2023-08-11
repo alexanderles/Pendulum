@@ -5,7 +5,7 @@ const contracts = {
       chainId: "31337",
       contracts: {
         PendulumFactory: {
-          address: "0x0165878A594ca255338adfa4d48449f69242Eb8F",
+          address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
           abi: [
             {
               inputs: [],
@@ -154,6 +154,21 @@ const contracts = {
                 {
                   internalType: "uint256",
                   name: "_validUntil",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "_questionFrequency",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "_tax",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "_saleRoyalty",
                   type: "uint256",
                 },
               ],
@@ -337,7 +352,7 @@ const contracts = {
           ],
         },
         CreateProxy: {
-          address: "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
+          address: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
           abi: [
             {
               inputs: [
@@ -411,7 +426,7 @@ const contracts = {
           ],
         },
         Pendulum: {
-          address: "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
+          address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
           abi: [
             {
               inputs: [],
@@ -541,6 +556,11 @@ const contracts = {
             {
               inputs: [],
               name: "NotPermitted",
+              type: "error",
+            },
+            {
+              inputs: [],
+              name: "NotPermittedForLeadingBidder",
               type: "error",
             },
             {
@@ -755,6 +775,31 @@ const contracts = {
                 {
                   indexed: true,
                   internalType: "address",
+                  name: "fan",
+                  type: "address",
+                },
+                {
+                  indexed: true,
+                  internalType: "address",
+                  name: "beneficiary",
+                  type: "address",
+                },
+                {
+                  indexed: false,
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              name: "Settlement",
+              type: "event",
+            },
+            {
+              anonymous: false,
+              inputs: [
+                {
+                  indexed: true,
+                  internalType: "address",
                   name: "from",
                   type: "address",
                 },
@@ -909,6 +954,13 @@ const contracts = {
             },
             {
               inputs: [],
+              name: "deposit",
+              outputs: [],
+              stateMutability: "payable",
+              type: "function",
+            },
+            {
+              inputs: [],
               name: "factory",
               outputs: [
                 {
@@ -928,6 +980,32 @@ const contracts = {
                   internalType: "address",
                   name: "",
                   type: "address",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "fanReceiveTime",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "fanSolvent",
+              outputs: [
+                {
+                  internalType: "bool",
+                  name: "",
+                  type: "bool",
                 },
               ],
               stateMutability: "view",
@@ -1033,6 +1111,21 @@ const contracts = {
                   name: "_validUntil",
                   type: "uint256",
                 },
+                {
+                  internalType: "uint256",
+                  name: "_questionFrequency",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "_tax",
+                  type: "uint256",
+                },
+                {
+                  internalType: "uint256",
+                  name: "_saleRoyalty",
+                  type: "uint256",
+                },
               ],
               name: "initialize",
               outputs: [],
@@ -1058,6 +1151,32 @@ const contracts = {
                   internalType: "bool",
                   name: "",
                   type: "bool",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "lastInvocationTime",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "lastSettlementTime",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
                 },
               ],
               stateMutability: "view",
@@ -1149,6 +1268,19 @@ const contracts = {
             },
             {
               inputs: [],
+              name: "price",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
               name: "proxiableUUID",
               outputs: [
                 {
@@ -1162,9 +1294,61 @@ const contracts = {
             },
             {
               inputs: [],
+              name: "questionFrequency",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "questionTextLength",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "ratingPeriod",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
               name: "renounceOwnership",
               outputs: [],
               stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "responsePeriod",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
               type: "function",
             },
             {
@@ -1219,6 +1403,19 @@ const contracts = {
               type: "function",
             },
             {
+              inputs: [],
+              name: "saleRoyalty",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
               inputs: [
                 {
                   internalType: "address",
@@ -1260,6 +1457,19 @@ const contracts = {
               type: "function",
             },
             {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "newPrice",
+                  type: "uint256",
+                },
+              ],
+              name: "setPrice",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
               inputs: [],
               name: "startAuction",
               outputs: [],
@@ -1293,6 +1503,19 @@ const contracts = {
                   internalType: "string",
                   name: "",
                   type: "string",
+                },
+              ],
+              stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "tax",
+              outputs: [
+                {
+                  internalType: "uint256",
+                  name: "",
+                  type: "uint256",
                 },
               ],
               stateMutability: "view",
@@ -1395,6 +1618,26 @@ const contracts = {
                 },
               ],
               stateMutability: "view",
+              type: "function",
+            },
+            {
+              inputs: [
+                {
+                  internalType: "uint256",
+                  name: "_amount",
+                  type: "uint256",
+                },
+              ],
+              name: "withdraw",
+              outputs: [],
+              stateMutability: "nonpayable",
+              type: "function",
+            },
+            {
+              inputs: [],
+              name: "withdrawAll",
+              outputs: [],
+              stateMutability: "nonpayable",
               type: "function",
             },
           ],

@@ -16,6 +16,8 @@ interface IPendulum is IERC165Upgradeable {
         uint256 indexed auctionEndTime
     );
 
+    event Settlement(address indexed fan, address indexed beneficiary, uint);
+
     event Bid(address indexed bidder, uint256 indexed bid);
 
     event FinalizeAuction(address indexed newFan, uint256 indexed winningBid);
@@ -32,6 +34,7 @@ interface IPendulum is IERC165Upgradeable {
     error ContractDoesNotHoldPendulum();
     error InsufficientFunds(uint, uint);
     error InvalidNewPrice(uint);
+    error NotPermittedForLeadingBidder();
 
     function setAuctionParameters(
         uint256 newStartingPrice,

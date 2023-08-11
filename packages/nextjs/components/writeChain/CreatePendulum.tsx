@@ -13,6 +13,9 @@ export const CreatePendulum = () => {
   const [auctionMinDuration, setAuctionMinDuration] = useState(0);
   const [beneficiary, setBeneficiary] = useState("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
   const [validUntil, setValidUntil] = useState(0);
+  const [questionFrequency, setQuestionFrequency] = useState(0);
+  const [tax, setTax] = useState(0);
+  const [saleRoyalty, setSaleRoyalty] = useState(0);
   function daysToSeconds(days: number) {
     const currentDate = new Date(); // Current date and time
     const unixTimestamp = Math.floor(currentDate.getTime() / 1000);
@@ -32,6 +35,9 @@ export const CreatePendulum = () => {
       BigInt(daysToSeconds(auctionMinDuration) || 0),
       beneficiary,
       BigInt(daysToSeconds(validUntil) || 0),
+      BigInt(daysToSeconds(questionFrequency) || 0),
+      BigInt((tax * 100).toString() || 0),
+      BigInt((saleRoyalty * 100).toString() || 0),
     ],
     //args: ["Account Abstraction", "AA", "", 1000000, 1000, 300, 400, beneficiary],
     onBlockConfirmation: txnReceipt => {
@@ -77,8 +83,20 @@ export const CreatePendulum = () => {
           />
         </FormItem>
 
-        <FormItem label="Auction Duration (In Days)">
+        <FormItem label="Pendulum Validity">
           <Input placeholder="30" onChange={e => setValidUntil(e.target.value)} type="number" />
+        </FormItem>
+
+        <FormItem label="Question frequency">
+          <Input placeholder="7" onChange={e => setQuestionFrequency(e.target.value)} type="number" />
+        </FormItem>
+
+        <FormItem label="Weekly Recharge Fee">
+          <Input placeholder="5" onChange={e => setTax(e.target.value)} type="number" />
+        </FormItem>
+
+        <FormItem label="Secondary sale royalty">
+          <Input placeholder="10" onChange={e => setSaleRoyalty(e.target.value)} type="number" />
         </FormItem>
 
         <Button type="submit" className={`${isLoading ? "loading" : ""}`} onClick={() => writeAsync()}>

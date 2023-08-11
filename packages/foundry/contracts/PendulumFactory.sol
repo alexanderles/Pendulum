@@ -44,7 +44,10 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
         uint256 _auctionMinBidStep,
         uint256 _auctionMinDuration,
         address _beneficiary,
-        uint _validUntil
+        uint _validUntil,
+        uint256 _questionFrequency,
+        uint256 _tax,
+        uint256 _saleRoyalty
     ) external virtual {
         bytes memory initializeCalldata = abi.encodeWithSelector(
             Pendulum.initialize.selector,
@@ -55,7 +58,10 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
             _auctionMinBidStep,
             _auctionMinDuration,
             _beneficiary,
-            _validUntil
+            _validUntil,
+            _questionFrequency,
+            _tax,
+            _saleRoyalty
         );
 
         Pendulum pendulum = new Pendulum();

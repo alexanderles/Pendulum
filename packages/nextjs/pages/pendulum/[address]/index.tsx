@@ -45,7 +45,13 @@ export default function Pendulum({ params }: any) {
     value: `${Number(amount)}`,
   });
 
-  console.log("AMOUNT:", BigInt(ethers.parseEther(amount.toString())));
+  function getMinBid() {
+    if (minimumBid) {
+      return ethers.formatEther(String(minimumBid)).toString();
+    } else {
+      return "0.1";
+    }
+  }
 
   return (
     <div className="flex align-center w-full">
@@ -54,11 +60,7 @@ export default function Pendulum({ params }: any) {
           <PendulumThumbnail address={address}></PendulumThumbnail>
           <div className="flex container">
             <FormItem label="Enter bid Value">
-              <Input
-                placeholder={ethers.formatEther(String(minimumBid))}
-                type="tel"
-                onChange={e => setAmount(e.target.value)}
-              ></Input>
+              <Input placeholder={getMinBid()} type="tel" onChange={e => setAmount(e.target.value)}></Input>
               <Button onClick={() => writeAsync()}> Bid </Button>
             </FormItem>
           </div>

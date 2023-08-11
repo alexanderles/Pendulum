@@ -19,6 +19,10 @@ contract PendulumFactoryTest is Test {
 
     address public beneficiary;
 
+    uint public questionFrequency;
+    uint public tax;
+    uint public saleRoyalty;
+
     Pendulum public pendulum;
     PendulumFactory public pendulumFactory;
 
@@ -32,6 +36,9 @@ contract PendulumFactoryTest is Test {
         validUntil = 30 days;
         beneficiary = msg.sender;
         validUntil = 5 days;
+        questionFrequency = 7 days;
+        tax = 5_00;
+        saleRoyalty = 10_00;
 
         pendulumFactory = new PendulumFactory();
         console.log("Pendulum Factory Impl:", address(pendulumFactory));
@@ -62,7 +69,10 @@ contract PendulumFactoryTest is Test {
             auctionMinBidStep,
             auctionMinDuration,
             beneficiary,
-            validUntil
+            validUntil,
+            questionFrequency,
+            tax,
+            saleRoyalty
         );
 
         Pendulum pendulum1 = new Pendulum();
@@ -77,7 +87,10 @@ contract PendulumFactoryTest is Test {
             auctionMinBidStep,
             auctionMinDuration,
             beneficiary,
-            validUntil
+            validUntil,
+            questionFrequency,
+            tax,
+            saleRoyalty
         );
 
         Pendulum pendulum2 = new Pendulum();
@@ -92,7 +105,10 @@ contract PendulumFactoryTest is Test {
             auctionMinBidStep,
             auctionMinDuration,
             beneficiary,
-            validUntil
+            validUntil,
+            questionFrequency,
+            tax,
+            saleRoyalty
         );
 
         Pendulum pendulum3 = new Pendulum();

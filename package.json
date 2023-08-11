@@ -44,6 +44,7 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "mongodb": "^5.7.0",
-    "mongoose": "^7.4.2"
+    "mongoose": "^7.4.2",
+    "react-countdown": "^2.3.5"
   }
 }
