@@ -5,6 +5,7 @@ import { isAddress } from "viem";
 import Button from "~~/components/Button";
 import FormItem from "~~/components/Forms/FormItem";
 import Input from "~~/components/Forms/Input";
+import { PendulumPageNoAuction } from "~~/components/PendulumPageNoAuction";
 import { PendulumThumbnail } from "~~/components/readChain/pendulumThumbnail";
 import { UpdatePendulum } from "~~/components/writeChain/UpdatePendulum";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
@@ -33,6 +34,12 @@ export default function Pendulum({ params }: any) {
     address,
   });
 
+  const { data: auctionEndTime } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "auctionEndTime",
+    address,
+  });
+
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "Pendulum",
     functionName: "bid",
@@ -53,22 +60,36 @@ export default function Pendulum({ params }: any) {
     }
   }
 
-  return (
-    <div className="flex align-center w-full">
-      {typeof address === "string" && isAddress(address) ? ( // Check if address is a valid string
-        <div className="flex items-center">
-          <PendulumThumbnail address={address}></PendulumThumbnail>
-          <div className="flex container">
-            <FormItem label="Enter bid Value">
-              <Input placeholder={getMinBid()} type="tel" onChange={e => setAmount(e.target.value)}></Input>
-              <Button onClick={() => writeAsync()}> Bid </Button>
-            </FormItem>
+  function isAuctionRunning() {
+    if ((auctionEndTime ? auctionEndTime : 0 * 1000) < Date.now()) {
+      return false;
+    } else {
+      true;
+    }
+  }
+
+  console.log("AuctionRunning?", isAuctionRunning());
+
+  if (isAuctionRunning()) {
+    return (
+      <div className="flex align-center w-full">
+        {typeof address === "string" && isAddress(address) ? ( // Check if address is a valid string
+          <div className="flex items-center">
+            <PendulumThumbnail address={address}></PendulumThumbnail>
+            <div className="flex container">
+              <FormItem label="Enter bid Value">
+                <Input placeholder={getMinBid()} type="tel" onChange={e => setAmount(e.target.value)}></Input>
+                <Button onClick={() => writeAsync()}> Bid </Button>
+              </FormItem>
+            </div>
+            {/* <UpdatePendulum address={address}></UpdatePendulum> */}
           </div>
-          {/* <UpdatePendulum address={address}></UpdatePendulum> */}
-        </div>
-      ) : (
-        <p>Invalid address</p> // Handle the case when address is undefined or an array
-      )}
-    </div>
-  );
+        ) : (
+          <p>Invalid address</p> // Handle the case when address is undefined or an array
+        )}
+      </div>
+    );
+  } else {
+    return <PendulumPageNoAuction></PendulumPageNoAuction>;
+  }
 }
