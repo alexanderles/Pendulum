@@ -90,6 +90,14 @@ export default function Pendulum({ params }: any) {
       </div>
     );
   } else {
-    return <PendulumPageNoAuction></PendulumPageNoAuction>;
+    return (
+      <div>
+        {typeof address === "string" && isAddress(address) ? (
+          <PendulumPageNoAuction address={address}></PendulumPageNoAuction>
+        ) : (
+          <p>Invalid address</p>
+        )}
+      </div>
+    );
   }
 }

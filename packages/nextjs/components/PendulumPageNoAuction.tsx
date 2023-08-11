@@ -3,7 +3,8 @@ import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
 import { ethers } from "ethers";
-import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { secondsToDhms } from "~~/utils/pendulumUtis";
 
 interface DataComponentProps {
   label: string;
@@ -70,6 +71,33 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
     address: address,
   });
 
+  const { data: price } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "price",
+    address,
+  });
+
+  const { data: tax } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "tax",
+    address,
+  });
+
+  const { data: validUntil } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "validUntil",
+    address,
+  });
+
+  function getPrice() {
+    return ethers.formatEther(price ? price.toString() : "0");
+  }
+
+  function feePerWeek() {
+    const t = tax ? Number(tax) / 100 : 1;
+    return Number(getPrice()) * t;
+  }
+
   return (
     <div className="w-full h-screen mb-12 mt-12">
       <div className="w-10/12 flex justify-between items-start m-auto">
@@ -78,12 +106,20 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
           <h1 className="text-4xl"> Account Abstraction </h1>
           <div className="flex flex-col justify-between p-8">
             <div className="flex justify-between">
-              <DataComponent label="Current Price" textLabel="$50" align="text-left"></DataComponent>
-              <DataComponent label="Current Fee/wk" textLabel="$20" align="text-right"></DataComponent>
+              <DataComponent label="Current Price" textLabel={getPrice() + " ETH"} align="text-left"></DataComponent>
+              <DataComponent
+                label="Current Fee/wk"
+                textLabel={feePerWeek() + " ETH"}
+                align="text-right"
+              ></DataComponent>
             </div>
             <div className="flex justify-between mt-8">
               <DataComponent label="Pendulum Stops" textLabel="6 days" align="text-left"></DataComponent>
-              <DataComponent label="Pendulum Breaks" textLabel="7 days" align="text-right"></DataComponent>
+              <DataComponent
+                label="Pendulum Breaks"
+                textLabel={secondsToDhms(Number(validUntil) / 1000)}
+                align="text-right"
+              ></DataComponent>
             </div>
           </div>
           <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-lg m-8">
