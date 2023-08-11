@@ -90,7 +90,11 @@ contract Pendulum is ERC721P, IPendulum {
         uint256 newStartingPrice,
         uint256 newMinBidStep,
         uint256 newMinDuration
-    ) external virtual onlyOwner onlyExpertControlled notDuringAuction {
+    )
+        external
+        virtual
+    // ) external virtual onlyOwner onlyExpertControlled notDuringAuction {
+    {
         if (newMinDuration == 0) {
             revert InvalidAuctionDuration(newMinDuration);
         }
@@ -107,7 +111,8 @@ contract Pendulum is ERC721P, IPendulum {
         );
     }
 
-    function startAuction() external virtual onlyOwner notDuringAuction {
+    function startAuction() external // virtual onlyOwner notDuringAuction
+    {
         // TODO if fan is the expert might allow them?
         if (address(this) != fan) {
             revert ContractDoesNotHoldPendulum();
@@ -127,14 +132,14 @@ contract Pendulum is ERC721P, IPendulum {
         uint256 amount,
         uint256 newPendulumPrice
     ) external payable virtual {
-        if (!_auctionRunning()) {
-            revert AuctionNotRunning();
-        }
+        // if (!_auctionRunning()) {
+        //     revert AuctionNotRunning();
+        // }
 
-        // if owner is bidding himself or beneficiery is bidding
-        if (msg.sender == owner() || msg.sender == beneficiary) {
-            revert NotPermitted();
-        }
+        // // if owner is bidding himself or beneficiery is bidding
+        // if (msg.sender == owner() || msg.sender == beneficiary) {
+        //     revert NotPermitted();
+        // }
 
         uint256 totalFunds = fundsOf[msg.sender] + msg.value;
 
@@ -169,7 +174,8 @@ contract Pendulum is ERC721P, IPendulum {
     // transfer winning bid to beneficiery, orb to the winner, if it was started by previous keeper than
     // then most of the procceds - royalty for platform and expert go to the keeper.
     // orb also allows for previous fans to do auction, this does not implement that TODO maybe after the hack
-    function finalizeAuction() external virtual notDuringAuction {
+    function finalizeAuction() external virtual //notDuringAuction
+    {
         if (auctionEndTime == 0) {
             revert AuctionNotRunning();
         }

@@ -14,7 +14,9 @@ export const CreatePendulum = () => {
   const [beneficiary, setBeneficiary] = useState("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
   const [validUntil, setValidUntil] = useState(0);
   function daysToSeconds(days: number) {
-    return days * 24 * 60 * 60;
+    const currentDate = new Date(); // Current date and time
+    const unixTimestamp = Math.floor(currentDate.getTime() / 1000);
+    return unixTimestamp + days * 24 * 60 * 60;
   }
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
@@ -49,11 +51,11 @@ export const CreatePendulum = () => {
       </div>
       <hr className="w-full border-t-2 border-neutral-700" />
       <div className="mt-10 md:mt-0 space-y-5 sm:space-y-6 md:sm:space-y-8">
-        <FormItem label="Pendulum Topic">
+        <FormItem label="Pendulum Question">
           <Input placeholder="Account Abstraction" onChange={e => setTopicName(e.target.value)} />
         </FormItem>
-        <FormItem label="Symbol">
-          <Input placeholder="AA" onChange={e => setTokenSymbol(e.target.value)} />
+        <FormItem label="Question Type">
+          <Input placeholder="Business" onChange={e => setTokenSymbol(e.target.value)} />
         </FormItem>
 
         <FormItem label="Auction Starting Price">

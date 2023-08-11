@@ -27,17 +27,25 @@ export default function Pendulum({ params }: any) {
     address,
   });
 
+  const { data: minimumBid } = useScaffoldContractRead({
+    contractName: "Pendulum",
+    functionName: "leadingBid",
+    address,
+  });
+
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "Pendulum",
     functionName: "bid",
-    args: [ethers.parseEther(amount), ethers.parseEther(price)],
+    args: [BigInt(ethers.parseEther(amount.toString())), ethers.parseEther("2")],
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
       console.log(txnReceipt);
     },
     address: address,
-    value: ethers.parseEther(amount).toString(),
+    value: `${Number(amount)}`,
   });
+
+  console.log("AMOUNT:", BigInt(ethers.parseEther(amount.toString())));
 
   return (
     <div className="flex align-center w-full">
@@ -46,7 +54,11 @@ export default function Pendulum({ params }: any) {
           <PendulumThumbnail address={address}></PendulumThumbnail>
           <div className="flex container">
             <FormItem label="Enter bid Value">
-              <Input placeholder="1"></Input>
+              <Input
+                placeholder={ethers.formatEther(String(minimumBid))}
+                type="tel"
+                onChange={e => setAmount(e.target.value)}
+              ></Input>
               <Button onClick={() => writeAsync()}> Bid </Button>
             </FormItem>
           </div>
