@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { QRCodeSVG } from "qrcode.react";
 import CopyToClipboard from "react-copy-to-clipboard";
@@ -11,6 +12,7 @@ import {
   ChevronDownIcon,
   DocumentDuplicateIcon,
   QrCodeIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Address, Balance, BlockieAvatar } from "~~/components/scaffold-eth";
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-eth";
@@ -129,6 +131,11 @@ export const RainbowKitCustomConnectButton = () => {
                             </div>
                           </CopyToClipboard>
                         )}
+                      </li>
+                      <li>
+                        <Link className="menu-item btn-sm !rounded-xl" href="/profile">
+                          <UserCircleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Profile</span>
+                        </Link>
                       </li>
                       <li>
                         <label htmlFor="qrcode-modal" className="btn-sm !rounded-xl">

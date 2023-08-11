@@ -122,7 +122,7 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
               ></DataComponent>
             </div>
           </div>
-          <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-lg m-8">
+          <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-2xl m-8 ">
             <h3 className="text-3xl mb-6">Set New Price</h3>
             <h4 className="text-lg text-stone-300">
               New fee per week <span className="text-slate-50 font-semibold">$25</span>
@@ -135,7 +135,7 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
             </Button>
           </div>
 
-          <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-lg m-8">
+          <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-2xl m-8 ">
             <h3 className="text-3xl mb-6">Recharge Pendulum</h3>
             <h4 className="text-lg text-stone-300">
               Total Fee <span className="text-slate-50 font-semibold">$25</span>
@@ -151,7 +151,7 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
         <div className="flex flex-col w-full ml-8 rounded-lg justify-center text-center h-full">
           <h4 className="text-xl text-slate-400 m-0"> </h4>
           <h1 className="text-4xl mb-8"> Past Responses </h1>
-          <div className="p-10 rounded-lg bg-gray-300 bg-opacity-30 w-full h-screen flex flex-col justify-between items-center">
+          <div className="p-10 rounded-2xl bg-gray-300 bg-opacity-30 w-full h-screen max-h-full flex flex-col justify-between items-center">
             <div className="flex flex-col t-0 h-3/4 overflow-y-auto mb-4" id="responses">
               <ResponseCard></ResponseCard>
               <ResponseCard></ResponseCard>
