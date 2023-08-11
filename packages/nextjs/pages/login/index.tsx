@@ -21,7 +21,7 @@ export default function LoginPage() {
       console.log("Login success: ", response.data);
       toast.success("Login success")
 
-      router.push(`/profile/`);
+      router.push(`/profile`);
     } catch (error: any) {
       console.log("Login failed: ", error.message);
       toast.error(error.message);
@@ -49,7 +49,7 @@ export default function LoginPage() {
       {/* Email */}
       <label htmlFor="email">email</label>
       <input
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-stone-700"
         id="email"
         type="text"
         value={user.email}
@@ -60,7 +60,7 @@ export default function LoginPage() {
       {/* Password */}
       <label htmlFor="password">password</label>
       <input
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600"
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-stone-700"
         id="password"
         type="password"
         value={user.password}
