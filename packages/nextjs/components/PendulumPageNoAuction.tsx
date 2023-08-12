@@ -2,8 +2,10 @@ import { useState } from "react";
 import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
+import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { useTransactor } from "~~/hooks/scaffold-eth";
 import { secondsToDhms } from "~~/utils/pendulumUtis";
 
 interface DataComponentProps {
@@ -57,8 +59,86 @@ const ResponseCard = () => {
   );
 };
 
+// const { writeAsync, isLoading } = useScaffoldContractWrite({
+//     contractName: "PendulumFactory",
+//     functionName: "createPendulum",
+//     gas: 10_000_000n,
+//     args: [
+//       BigInt((saleRoyalty * 100).toString() || 0),
+//     ],
+//     //args: ["Account Abstraction", "AA", "", 1000000, 1000, 300, 400, beneficiary],
+//     onBlockConfirmation: txnReceipt => {
+//       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+//       console.log(txnReceipt);
+//     },
+//   });
+
 export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
+  const [fanQuestion, setFanQuestion] = useState("");
   const [newPrice, setNewPrice] = useState(0);
+  const [attestationUID, setAttestationUID] = useState("");
+
+  const EASSepoliaAddress = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e";
+
+  const submitAttestation = async () => {
+    let fanAddress = "0x0";
+
+    if (window.ethereum) {
+      const accounts = await window.ethereum.request({ method: "eth_accounts" });
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = provider.getSigner();
+
+      if (accounts.length > 0) {
+        fanAddress = accounts[0];
+      } else {
+        console.log("No connected accounts");
+      }
+
+      try {
+        const eas = new EAS(EASSepoliaAddress);
+        eas.connect(await signer);
+        const schemaEncoder = new SchemaEncoder("address fan, address pendulum, uint256 date, string question");
+        const dateValue = Number(Math.floor(new Date().getTime() / 1000));
+
+        const encodeData = schemaEncoder.encodeData([
+          { name: "fan", value: fanAddress, type: "address" },
+          { name: "pendulum", value: address!.toString(), type: "address" },
+          { name: "date", value: dateValue, type: "uint256" },
+          { name: "question", value: fanQuestion, type: "string" },
+        ]);
+
+        const schemaUID = "0x2c2feb2fbfcba7fcfd1e2ffd8e406a776feb2f45e98e7c3bf70d5253e8791594";
+        // await writeTx(
+        //   () =>
+        //     wagmiContractWrite.writeAsync({
+        //       args: newArgs ?? args,
+        //       value: newValue ? parseEther(newValue) : value && parseEther(value),
+        //       ...otherConfig,
+        //     }),
+        //   { onBlockConfirmation, blockConfirmations },
+        // );
+
+        await useTransactor(() => {
+          eas.attest({
+            schema: schemaUID,
+            data: { recipient: fanAddress, expirationTime: BigInt(0), revocable: true, data: encodeData },
+          });
+        });
+
+        const tx = await eas.attest({
+          schema: schemaUID,
+          data: { recipient: fanAddress, expirationTime: BigInt(0), revocable: true, data: encodeData },
+        });
+
+        const newAttestationUID = await tx.wait();
+        setAttestationUID(newAttestationUID);
+      } catch (e) {
+        console.log("Some error:", e);
+      }
+    } else {
+      console.log("No Ethereum provider detected");
+    }
+  };
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "Pendulum",
@@ -166,9 +246,10 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
                   placeholder="Input your question here"
                   sizeClass="h-48 px-4 py-3 align-text-top"
                   fontClass="text-lg font-normal"
+                  onChange={e => setFanQuestion(e.target.value)}
                 ></Input>
               </FormItem>
-              <Button> Ask Question </Button>
+              <Button onClick={submitAttestation}> Ask Question </Button>
             </div>
           </div>
         </div>

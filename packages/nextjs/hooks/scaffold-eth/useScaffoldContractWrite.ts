@@ -80,7 +80,6 @@ export const useScaffoldContractWrite = <
           { onBlockConfirmation, blockConfirmations },
         );
       } catch (e: any) {
-        ("THIS IS ERRORING");
         const message = getParsedError(e);
         notification.error(message);
       } finally {
