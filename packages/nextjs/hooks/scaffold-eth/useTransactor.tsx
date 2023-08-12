@@ -58,8 +58,6 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
       if (typeof tx === "function") {
         // Tx is already prepared by the caller
         transactionHash = (await tx()).hash;
-
-        console.log("RUNNING FUNCTION 2");
       } else if (tx != null) {
         transactionHash = await walletClient.sendTransaction(tx);
       } else {

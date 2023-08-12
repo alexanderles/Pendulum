@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const path = require("path");
-const { ethers, Wallet } = require("ethers");
+const { ethers, Wallet, BrowserProvider } = require("ethers");
 const QRCode = require("qrcode");
 const fs = require("fs");
 const toml = require("toml");
@@ -32,18 +32,22 @@ async function getBalanceForEachNetwork(address) {
 
       const networkUrl = replaceENVAlchemyKey(rpcEndpoints[networkName]);
 
+      console.log("NETWORK URL", networkUrl);
+
       try {
-        const provider = new ethers.providers.JsonRpcProvider(networkUrl);
+        provider = new ethers.JsonRpcProvider(networkUrl);
+        console.log("ETHER PROVIDER:", provider);
+
+        //const provider = new ethers.providers.JsonRpcProvider(networkUrl);
         const balance = await provider.getBalance(address);
         console.log("--", networkName, "-- 📡");
-        console.log("   balance:", +ethers.utils.formatEther(balance));
+        console.log("   balance:", +ethers.formatEther(balance));
         console.log(
           "   nonce:",
           +(await provider.getTransactionCount(address))
         );
       } catch (e) {
         console.log("Can't connect to network", networkName);
-        console.log();
       }
     }
   } catch (error) {
