@@ -5,7 +5,6 @@ import Input from "./Forms/Input";
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { useTransactor } from "~~/hooks/scaffold-eth";
 import { secondsToDhms } from "~~/utils/pendulumUtis";
 
 interface DataComponentProps {
@@ -108,30 +107,31 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
         ]);
 
         const schemaUID = "0x2c2feb2fbfcba7fcfd1e2ffd8e406a776feb2f45e98e7c3bf70d5253e8791594";
-        // await writeTx(
-        //   () =>
-        //     wagmiContractWrite.writeAsync({
-        //       args: newArgs ?? args,
-        //       value: newValue ? parseEther(newValue) : value && parseEther(value),
-        //       ...otherConfig,
-        //     }),
-        //   { onBlockConfirmation, blockConfirmations },
-        // );
-
-        await useTransactor(() => {
-          eas.attest({
-            schema: schemaUID,
-            data: { recipient: fanAddress, expirationTime: BigInt(0), revocable: true, data: encodeData },
-          });
-        });
+        const easData = {
+          recipient: fanAddress,
+          expirationTime: BigInt(0),
+          revocable: true,
+          data: encodeData,
+        };
 
         const tx = await eas.attest({
           schema: schemaUID,
           data: { recipient: fanAddress, expirationTime: BigInt(0), revocable: true, data: encodeData },
         });
 
+        // const { writeAsync, isLoading } = useScaffoldContractWrite({
+        //   contractName: "EAS",
+        //   functionName: "attest",
+        //   args: [`0x${schemaUID}`, easData],
+        //   onBlockConfirmation: txnReceipt => {
+        //     console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+        //     console.log(txnReceipt);
+        //   },
+        // });
+
         const newAttestationUID = await tx.wait();
         setAttestationUID(newAttestationUID);
+        console.log(newAttestationUID);
       } catch (e) {
         console.log("Some error:", e);
       }
