@@ -6,7 +6,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 connect();
 
 export default async function POST(request: NextApiRequest, res: NextApiResponse) {
-  console.log("In function");
   try {
     const reqBody: any = request.body;
     const { username, email, password } = reqBody;

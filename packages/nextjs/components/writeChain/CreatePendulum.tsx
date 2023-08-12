@@ -1,11 +1,20 @@
+"use client";
+
+import React, { useEffect } from "react";
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Button from "../Button";
 import FormItem from "../Forms/FormItem";
 import Input from "../Forms/Input";
+import axios from "axios";
 import { ethers } from "ethers";
-import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { toast } from "react-hot-toast";
+import { useScaffoldContractWrite, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
 
 export const CreatePendulum = () => {
+  const router = useRouter();
+
   const [topicName, setTopicName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
   const [auctionStartingPrice, setAuctionStartingPrice] = useState(0);
@@ -16,6 +25,14 @@ export const CreatePendulum = () => {
   const [questionFrequency, setQuestionFrequency] = useState(0);
   const [tax, setTax] = useState(0);
   const [saleRoyalty, setSaleRoyalty] = useState(0);
+
+  const [pendulum, setPendulum] = useState({
+    name: "",
+    count: 0,
+    pendulumAddr: "",
+  });
+  const [loading, setLoading] = React.useState(false);
+
   function daysToSeconds(days: number) {
     const currentDate = new Date(); // Current date and time
     const unixTimestamp = Math.floor(currentDate.getTime() / 1000);
@@ -43,6 +60,50 @@ export const CreatePendulum = () => {
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
       console.log(txnReceipt);
+    },
+  });
+
+  const onPendulumCreated = async () => {
+    console.log("on created...");
+    if (!(pendulum.name && pendulum.count && pendulum.pendulumAddr)) {
+      console.log("error: one or more pendulum fields not set");
+      return;
+    }
+
+    try {
+      console.log("pendulum: ", pendulum);
+      const response = await axios.post("/api/pendulums/creation", pendulum);
+      console.log("Signup success: ", response.data);
+      router.push(`/pendulums/${pendulum.pendulumAddr}`);
+    } catch (error: any) {
+      console.log("Signup failed: ", error.message);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useScaffoldEventSubscriber({
+    contractName: "PendulumFactory",
+    eventName: "Creation",
+    listener: logs => {
+      logs.map(log => {
+        const { name, count, pendulumAddr } = log.args;
+        console.log("📡 Pendulum Creation event", name, count, pendulumAddr);
+
+        setPendulum({
+          name: name ? name : "",
+          count: count ? Number(count) : 0,
+          pendulumAddr: pendulumAddr ? pendulumAddr : "",
+        });
+
+        console.log("pendulum set");
+        console.log(pendulum.name);
+        console.log(pendulum.count);
+        console.log(pendulum.pendulumAddr);
+
+        onPendulumCreated();
+      });
     },
   });
 
