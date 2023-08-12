@@ -49,4 +49,10 @@ interface IPendulum is IERC165Upgradeable {
     function finalizeAuction() external;
 
     function minimumBid() external returns (uint256);
+
+    function lastInvocationTime() external view returns (uint256);
+
+    function questionFrequency() external view returns (uint256);
+
+    function setLastInvocationTime(uint256 timestamp) external;
 }

@@ -13,7 +13,7 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
 
     // Mapping for all pendulums created from this factory
     mapping(uint256 => address) public pendulums;
-
+    address public registry;
     // Number of pendulums created from this factory
     uint256 public pendulumCount;
 
@@ -31,7 +31,8 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
         _disableInitializers();
     }
 
-    function initialize() public initializer {
+    function initialize(address _registry) public initializer {
+        registry = _registry;
         __Ownable_init();
         __UUPSUpgradeable_init();
     }

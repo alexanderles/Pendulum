@@ -196,6 +196,13 @@ contract Pendulum is ERC721P, IPendulum {
         AddressUpgradeable.sendValue(payable(_recipient), _amount);
     }
 
+    function setLastInvocationTime(uint256 timestamp) external virtual {
+        // if (msg.sender != PendulumFactory(factory).registry()) {
+        //     revert NotPermitted();
+        // }
+        lastInvocationTime = timestamp;
+    }
+
     // only allows expert to start the auction.
     //Need one more way for any holder to start the auciton to relinquish control
     function setAuctionParameters(

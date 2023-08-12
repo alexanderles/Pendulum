@@ -32,8 +32,6 @@ async function getBalanceForEachNetwork(address) {
 
       const networkUrl = replaceENVAlchemyKey(rpcEndpoints[networkName]);
 
-      console.log("NETWORK URL", networkUrl);
-
       try {
         provider = new ethers.JsonRpcProvider(networkUrl);
         console.log("ETHER PROVIDER:", provider);

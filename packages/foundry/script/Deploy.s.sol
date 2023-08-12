@@ -2,6 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "../contracts/Pendulum.sol";
+import "../contracts/ResponseRegistry.sol";
 import "../contracts/PendulumFactory.sol";
 import "./DeployHelpers.s.sol";
 //import {ERC1967Proxy} from "../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
@@ -26,6 +27,7 @@ contract DeployScript is ScaffoldETHDeploy {
 
     Pendulum public pendulum;
     PendulumFactory public pendulumFactory;
+    ResponseRegistry public registry;
 
     function run() external {
         name = "Pendulum";
@@ -44,12 +46,26 @@ contract DeployScript is ScaffoldETHDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
+        registry = new ResponseRegistry();
+        console.log("Registry Impl:", address(registry));
+
+        CreateProxy registryProxy = new CreateProxy(
+            address(registry),
+            abi.encodeWithSelector(registry.initialize.selector)
+        );
+
+        registry = ResponseRegistry(address(registryProxy));
+        console.log("Registry :", address(registry));
+
         pendulumFactory = new PendulumFactory();
         console.log("Pendulum Factory Impl:", address(pendulumFactory));
 
         CreateProxy pendulumFactoryProxy = new CreateProxy(
             address(pendulumFactory),
-            abi.encodeWithSelector(pendulumFactory.initialize.selector)
+            abi.encodeWithSelector(
+                pendulumFactory.initialize.selector,
+                address(registry)
+            )
         );
 
         pendulumFactory = PendulumFactory(address(pendulumFactoryProxy));
