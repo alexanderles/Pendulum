@@ -20,7 +20,7 @@ function StatCard({ title, val, growth }: StatComponentProps) {
 function ProfilePage() {
   return (
     <main className="w-screen h-screen">
-      <div className="flex mx-auto w-4/5 mt-12">
+      <div className="flex mx-auto w-4/6 mt-12">
         <div className="flex flex-col">
           <img src="/punkpfp1.png" alt="User Profile" className="w-[100%] h-full object-cover rounded-2xl" />
           <div className="flex items-center space-x-4 mb-4 mt-4">
