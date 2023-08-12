@@ -26,7 +26,7 @@ export const CreatePendulum = () => {
   const [tax, setTax] = useState(0);
   const [saleRoyalty, setSaleRoyalty] = useState(0);
 
-  const [pendulum, setPendulum] = useState({
+  const [pendulum, setPendulum] = React.useState({
     name: "",
     count: 0,
     pendulumAddr: "",
@@ -38,6 +38,15 @@ export const CreatePendulum = () => {
     const unixTimestamp = Math.floor(currentDate.getTime() / 1000);
     return unixTimestamp + days * 24 * 60 * 60;
   }
+
+  useEffect(() => {
+    console.log("pendulum set");
+    console.log(pendulum.name);
+    console.log(pendulum.count);
+    console.log(pendulum.pendulumAddr);
+
+    onPendulumCreated();
+  }, [pendulum]);
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "PendulumFactory",
@@ -65,6 +74,10 @@ export const CreatePendulum = () => {
 
   const onPendulumCreated = async () => {
     console.log("on created...");
+    console.log(pendulum.name);
+    console.log(pendulum.count);
+    console.log(pendulum.pendulumAddr);
+
     if (!(pendulum.name && pendulum.count && pendulum.pendulumAddr)) {
       console.log("error: one or more pendulum fields not set");
       return;
@@ -74,7 +87,7 @@ export const CreatePendulum = () => {
       console.log("pendulum: ", pendulum);
       const response = await axios.post("/api/pendulums/creation", pendulum);
       console.log("Signup success: ", response.data);
-      router.push(`/pendulums/${pendulum.pendulumAddr}`);
+      //router.push(`/pendulums/${pendulum.pendulumAddr}`);
     } catch (error: any) {
       console.log("Signup failed: ", error.message);
       toast.error(error.message);
@@ -94,19 +107,13 @@ export const CreatePendulum = () => {
         console.log(name);
         console.log(count);
         console.log(pendulumAddr);
-        
-        setPendulum({
-          name: name ? name : "",
-          count: count ? Number(count) : 0,
-          pendulumAddr: pendulumAddr ? pendulumAddr : "",
-        });
 
-        console.log("pendulum set");
-        console.log(pendulum.name);
-        console.log(pendulum.count);
-        console.log(pendulum.pendulumAddr);
-
-        onPendulumCreated();
+        name && count && pendulumAddr
+          ? setPendulum({
+            name: name.toString(),
+            count: Number(count),
+            pendulumAddr: pendulumAddr.toString(),
+          }) : console.log("error: empty pendulum field!");
       });
     },
   });

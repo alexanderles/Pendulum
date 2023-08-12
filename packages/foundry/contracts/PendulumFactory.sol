@@ -21,9 +21,9 @@ contract PendulumFactory is OwnableUpgradeable, UUPSUpgradeable {
     mapping(uint256 versionNumber => address implementation) public versions;
 
     event Creation(
-        string indexed name,
+        string name,
         uint256 count,
-        address indexed pendulumAddr
+        address pendulumAddr
     );
 
     /// @custom:oz-upgrades-unsafe-allow constructor

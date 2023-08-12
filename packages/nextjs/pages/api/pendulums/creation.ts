@@ -25,7 +25,7 @@ export default async function POST(request: NextApiRequest, res: NextApiResponse
     });
 
     const savedPendulum = await newPendulum.save();
-    console.log("Saved user: ", savedPendulum);
+    console.log("Saved pendulum: ", savedPendulum);
 
     res.json({
         message: "Pendulum created successfully",
