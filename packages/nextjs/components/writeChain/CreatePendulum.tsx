@@ -91,6 +91,10 @@ export const CreatePendulum = () => {
         const { name, count, pendulumAddr } = log.args;
         console.log("📡 Pendulum Creation event", name, count, pendulumAddr);
 
+        console.log(name);
+        console.log(count);
+        console.log(pendulumAddr);
+        
         setPendulum({
           name: name ? name : "",
           count: count ? Number(count) : 0,
