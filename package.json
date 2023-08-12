@@ -38,12 +38,9 @@
   },
   "packageManager": "yarn@3.2.3",
   "dependencies": {
-<<<<<<< HEAD
-    "@rainbow-me/rainbowkit": "^1.0.8",
-=======
     "@ethereum-attestation-service/eas-contracts": "^1.0.0-beta.0",
     "@ethereum-attestation-service/eas-sdk": "^1.0.0-beta.0",
->>>>>>> 9cb66c3 (attestations finally work, changes a lof of stuff in default scaffold-config to make it work)
+    "@rainbow-me/rainbowkit": "^1.0.8",
     "@tanstack/react-query": "^4.32.6",
     "@typechain/ethers-v5": "^11.1.1",
     "cookies-next": "^2.1.2",

@@ -2871,9 +2871,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"@noble/hashes@npm:1.3.0, @noble/hashes@npm:~1.3.0":
-=======
 "@noble/hashes@npm:1.2.0, @noble/hashes@npm:~1.2.0":
   version: 1.2.0
   resolution: "@noble/hashes@npm:1.2.0"
@@ -2881,8 +2878,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.3.0":
->>>>>>> 9cb66c3 (attestations finally work, changes a lof of stuff in default scaffold-config to make it work)
+"@noble/hashes@npm:1.3.0, @noble/hashes@npm:~1.3.0":
   version: 1.3.0
   resolution: "@noble/hashes@npm:1.3.0"
   checksum: d7ddb6d7c60f1ce1f87facbbef5b724cdea536fc9e7f59ae96e0fc9de96c8f1a2ae2bdedbce10f7dcc621338dfef8533daa73c873f2b5c87fa1a4e05a95c2e2e
@@ -8855,7 +8851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-rpc-errors@npm:4.0.2, eth-rpc-errors@npm:^4.0.2":
+"eth-rpc-errors@npm:4.0.2":
   version: 4.0.2
   resolution: "eth-rpc-errors@npm:4.0.2"
   dependencies:
@@ -8864,9 +8860,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"ethers@npm:^6.7.0":
-=======
 "eth-rpc-errors@npm:^4.0.2":
   version: 4.0.3
   resolution: "eth-rpc-errors@npm:4.0.3"
@@ -8975,7 +8968,6 @@ __metadata:
   linkType: hard
 
 "ethers@npm:^6.6.5, ethers@npm:^6.7.0":
->>>>>>> 9cb66c3 (attestations finally work, changes a lof of stuff in default scaffold-config to make it work)
   version: 6.7.0
   resolution: "ethers@npm:6.7.0"
   dependencies:
@@ -14842,12 +14834,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
-<<<<<<< HEAD
-    "@rainbow-me/rainbowkit": ^1.0.8
-=======
     "@ethereum-attestation-service/eas-contracts": ^1.0.0-beta.0
     "@ethereum-attestation-service/eas-sdk": ^1.0.0-beta.0
->>>>>>> 9cb66c3 (attestations finally work, changes a lof of stuff in default scaffold-config to make it work)
+    "@rainbow-me/rainbowkit": ^1.0.8
     "@tanstack/react-query": ^4.32.6
     "@typechain/ethers-v5": ^11.1.1
     cookies-next: ^2.1.2
@@ -16937,7 +16926,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:7.4.6, ws@npm:^7.4.5":
+"ws@npm:7.4.6":
   version: 7.4.6
   resolution: "ws@npm:7.4.6"
   peerDependencies:
@@ -16982,11 +16971,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-<<<<<<< HEAD
-"ws@npm:^7.5.1":
-=======
 "ws@npm:^7.4.5, ws@npm:^7.4.6, ws@npm:^7.5.1":
->>>>>>> 9cb66c3 (attestations finally work, changes a lof of stuff in default scaffold-config to make it work)
   version: 7.5.9
   resolution: "ws@npm:7.5.9"
   peerDependencies:
