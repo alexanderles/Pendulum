@@ -13,7 +13,7 @@ import { useScaffoldContractRead } from "~~/hooks/scaffold-eth/useScaffoldContra
 
 export default function Pendulum({ params }: any) {
   const router = useRouter();
-  const address = router.query.slug;
+  const address = router.query.address;
   const [amount, setAmount] = useState("0");
   const [price, setPrice] = useState("0");
 
@@ -95,7 +95,7 @@ export default function Pendulum({ params }: any) {
         {typeof address === "string" && isAddress(address) ? (
           <PendulumPageNoAuction address={address}></PendulumPageNoAuction>
         ) : (
-          <p>Invalid address 2</p>
+          <p>Invalid address</p>
         )}
       </div>
     );
