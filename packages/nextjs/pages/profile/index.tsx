@@ -11,7 +11,7 @@ const ProfilePage = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  const [data, setData] = useState("No data");
+  const [userData, setUserData] = useState();
 
   useEffect(() => {
     // Redirect to the login page if the user is not signed in
@@ -19,22 +19,26 @@ const ProfilePage = () => {
       router.push("/login");
     }
 
+    const getUserDetails = async () => {
+      const res = await axios.post("/api/users/me", {email: session?.user?.email});
+      console.log("user maybe: ", res.data.data);
+      setUserData(res.data.data);
+    };
+
+    getUserDetails();
+
   }, []);
 
-  const getUserDetails = async () => {
-    const res = await axios.post("/api/users/me", {email: session?.user?.email});
-    console.log("user maybe: ", res.data.user);
-    setData(res.data.data._id);
-  };
+  
 
   return (
     <div className="max-w-3xl mx-auto p-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <img src="path/to/profile-photo.jpg" alt="Profile" className="w-16 h-16 rounded-full mr-4" />
+          <img src="/purple-gradient-1.jpg" alt="Profile" className="w-16 h-16 rounded-full mr-4" />
           <div>
-            <h1 className="text-2xl font-semibold">Your Name</h1>
-            <p className="text-gray-500">NFT Enthusiast</p>
+            <h1 className="text-2xl font-semibold">{userData? userData.username : (<>Name</>)}</h1>
+            <p className="text-gray-500">Expert</p>
           </div>
         </div>
         <div className="flex space-x-4">
@@ -67,7 +71,7 @@ const ProfilePage = () => {
         <div className="bg-white rounded-lg shadow-md">{/* NFT widget content */}</div>
         {/* Repeat this block for each NFT widget */}
       </div>
-      <Button onClick={getUserDetails()}>Details</Button>
+      {/* <Button onClick={getUserDetails()}>Details</Button> */}
     </div>
   );
 };

@@ -11,9 +11,11 @@ import axios from "axios";
 import { ethers } from "ethers";
 import { toast } from "react-hot-toast";
 import { useScaffoldContractWrite, useScaffoldEventSubscriber } from "~~/hooks/scaffold-eth";
+import { useSession } from "next-auth/react";
 
 export const CreatePendulum = () => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [topicName, setTopicName] = useState("");
   const [tokenSymbol, setTokenSymbol] = useState("");
@@ -32,6 +34,7 @@ export const CreatePendulum = () => {
     pendulumAddr: "",
   });
   const [loading, setLoading] = React.useState(false);
+  const [userData, setUserData] = useState();
 
   function daysToSeconds(days: number) {
     const currentDate = new Date(); // Current date and time
@@ -47,6 +50,22 @@ export const CreatePendulum = () => {
 
     onPendulumCreated();
   }, [pendulum]);
+
+  useEffect(() => {
+    // Redirect to the login page if the user is not signed in
+    if (!session?.user) {
+      router.push("/login");
+    }
+
+    const getUserDetails = async () => {
+      const res = await axios.post("/api/users/me", {email: session?.user?.email});
+      console.log("user maybe: ", res.data.data);
+      setUserData(res.data.data);
+    };
+
+    getUserDetails();
+
+  }, []);
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "PendulumFactory",
@@ -85,9 +104,11 @@ export const CreatePendulum = () => {
 
     try {
       console.log("pendulum: ", pendulum);
-      const response = await axios.post("/api/pendulums/creation", pendulum);
-      console.log("Signup success: ", response.data);
-      //router.push(`/pendulums/${pendulum.pendulumAddr}`);
+      const pendulumResponse = await axios.post("/api/pendulums/creation", pendulum);
+      console.log("Creation success: ", pendulumResponse.data);
+
+      const creatorResponse = await axios.put("/api/users/addPendulum", {pendulum, userData});
+      router.push(`/pendulums/${pendulum.pendulumAddr}`);
     } catch (error: any) {
       console.log("Signup failed: ", error.message);
       toast.error(error.message);
@@ -178,3 +199,5 @@ export const CreatePendulum = () => {
     </div>
   );
 };
+
+CreatePendulum.Auth = true;
