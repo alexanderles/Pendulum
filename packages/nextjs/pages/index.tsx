@@ -42,13 +42,13 @@ const Home: NextPage = () => {
         {/* <div className="flex-shrink-0 lg:w-1/2 flex flex-col items-start space-y-8 sm:space-y-10 pb-14 lg:pb-36 xl:pb-60 xl:pr-14 lg:mr-10 xl:mr-0"> */}
         <div className="flex-shrink-0 flex flex-col items-start lg:w-1/2 space-y-8 w-1/2 ml-64">
           <h2 className="font-semibold text-4xl md:text-5xl xl:text-6xl">
-            Grow with Expert's <br />
-            <span>Pendulums</span>
+            Direct access to <br />
+            <span>Experts</span>
           </h2>
           <span className="text-base md:text-lg text-neutral-500 dark:text-neutral-400">
             Discover the experts in all topics of life <br /> Ask them questions with their pendulums
           </span>
-          <Button href="/search">
+          <Button href="/pendulum">
             <span>Find Expert</span>
           </Button>
         </div>

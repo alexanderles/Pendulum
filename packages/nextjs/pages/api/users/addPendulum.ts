@@ -20,10 +20,10 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     const refId: String = pendulumFromDb._id.toString();
 
     console.log("new id: ", refId);
-    // const refObject = {refId};
-    // console.log("refObject: ", refObject);
+    const refObject = {refId};
+    console.log("refObject: ", refObject);
     
-    const status = await User.updateOne({ email: userData.email }, {$push: {pendulums: refId}});
+    const status = await User.updateOne({ email: userData.email }, {$push: {pendulums: refObject}});
 
 
     const response = res.json({

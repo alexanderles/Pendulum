@@ -16,7 +16,11 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please provide a password"],
   },
   pendulums: [{
-    type: {type: mongoose.Schema.Types.ObjectId, ref: 'pendulums'}
+    type: {type: mongoose.Schema.Types.ObjectId, ref: 'pendulums'},
+    refId: {
+      type: String,
+      required: [true, "Must have a refId"],
+    }
   }],
 });
 

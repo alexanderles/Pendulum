@@ -108,7 +108,7 @@ export const CreatePendulum = () => {
       console.log("Creation success: ", pendulumResponse.data);
 
       const creatorResponse = await axios.put("/api/users/addPendulum", {pendulum, userData});
-      router.push(`/pendulums/${pendulum.pendulumAddr}`);
+      // router.push(`/pendulums/${pendulum.pendulumAddr}`);
     } catch (error: any) {
       console.log("Signup failed: ", error.message);
       toast.error(error.message);
