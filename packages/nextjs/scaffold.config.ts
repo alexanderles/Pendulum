@@ -9,7 +9,7 @@ export type ScaffoldConfig = {
   walletAutoConnect: boolean;
 };
 
-const scaffoldConfig = {
+export const scaffoldConfig = {
   // The network where your DApp lives in
   targetNetwork: chains.sepolia,
 
