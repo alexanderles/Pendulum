@@ -20,10 +20,10 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
-    if (session) {
+    if (status === "authenticated") {
       router.push("/profile");
     }
-  }, [session])
+  }, [status])
 
   function handleSignIn(e: any) {
     e.preventDefault();

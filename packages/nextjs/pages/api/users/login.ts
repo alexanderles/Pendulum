@@ -1,7 +1,6 @@
 import { connect } from "../../../dbConfig/dbConfig";
 import User from "../../../models/userModel";
 import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 
 console.log("going to connect");

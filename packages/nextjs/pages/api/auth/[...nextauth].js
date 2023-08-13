@@ -5,7 +5,6 @@ import GoogleProvider from "next-auth/providers/google";
 import toast from "react-hot-toast";
 
 export default NextAuth({
-  secret: process.env.AUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
@@ -43,4 +42,5 @@ export default NextAuth({
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
 });
