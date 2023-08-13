@@ -14,6 +14,10 @@ const pendulumSchema = new mongoose.Schema({
     required: [true, "Please provide an address"],
     unique: true,
   },
+  price: {
+    type: Number,
+  }
+  
 });
 
 const Pendulum = mongoose.models.pendulums || mongoose.model("pendulums", pendulumSchema);

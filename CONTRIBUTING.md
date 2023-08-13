@@ -1,86 +1,79 @@
-# Welcome to Scaffold-ETH 2 Contributing Guide
+# Contributing to Pendulum
 
-Thank you for investing your time in contributing to Scaffold-ETH 2!
+Thank you for considering contributing to Pendulum! We appreciate your interest in improving our platform. To maintain a productive and collaborative environment, please follow the guidelines below when contributing.
 
-This guide aims to provide an overview of the contribution workflow to help us make the contribution process effective for everyone involved.
+## Table of Contents
 
-## About the Project
+- [Contributing to Pendulum](#contributing-to-pendulum)
+  - [Table of Contents](#table-of-contents)
+  - [How to Contribute](#how-to-contribute)
+  - [Reporting Issues](#reporting-issues)
+  - [Feature Requests](#feature-requests)
+  - [Pull Requests](#pull-requests)
+  - [Coding Guidelines](#coding-guidelines)
+  - [License](#license)
 
-Scaffold-ETH 2 is a minimal and forkable repo providing builders with a starter kit to build decentralized applications on Ethereum.
+## How to Contribute
 
-Read the [README](README.md) to get an overview of the project.
+To contribute to Pendulum, follow these steps:
 
-### Vision
+1. Fork the repository to your own GitHub account.
+2. Clone the forked repository to your local machine:
+   ```
+   git clone https://github.com/alexanderles/pendulum-superhack
+   ```
+3. Create a new branch:
+   ```
+   git checkout -b feature/your-feature
+   ```
+4. Make your changes, additions, or bug fixes.
+5. Test your changes to ensure they work as intended.
+6. Commit your changes:
+   ```
+   git commit -am 'Add some feature'
+   ```
+7. Push the branch to your forked repository:
+   ```
+   git push origin feature/your-feature
+   ```
+8. Submit a pull request to the `main` branch of the original repository.
 
-The goal of Scaffold-ETH 2 is to provide the primary building blocks for a decentralized application.
+## Reporting Issues
 
-The repo can be forked to include integrations and more features, but we want to keep the master branch simple and minimal.
+If you encounter any issues or bugs while using Pendulum, please report them in the [Issue Tracker](https://github.com/alexanderles/pendulum-superhack/issues). When reporting an issue, please provide the following details:
 
-### Project Status
+- A clear and descriptive title.
+- A detailed description of the issue, including any error messages or screenshots if applicable.
+- Steps to reproduce the issue.
+- The expected behavior and the actual behavior observed.
 
-The project is under active development.
+## Feature Requests
 
-You can view the open Issues, follow the development process and contribute to the project.
+If you have an idea for a new feature or enhancement to add to Pendulum, we encourage you to submit a feature request in the [Feature Request](). Please provide a clear and detailed description of the feature you would like to see implemented.
 
-## Getting started
+## Pull Requests
 
-You can contribute to this repo in many ways:
+We welcome pull requests from the community. To submit a pull request:
 
-- Solve open issues
-- Report bugs or feature requests
-- Improve the documentation
+1. Ensure that your forked repository is up to date with the latest changes from the original repository.
+2. Create a new branch for your changes.
+3. Follow the [How to Contribute](#how-to-contribute) guidelines to make your changes.
+4. Include clear commit messages that describe the changes made.
+5. Submit the pull request to the `main` branch of the original repository.
 
-Contributions are made via Issues and Pull Requests (PRs). A few general guidelines for contributions:
+Please note that all pull requests are reviewed by the project maintainers, and feedback or changes may be requested before the pull request is merged.
 
-- Search for existing Issues and PRs before creating your own.
-- Contributions should only fix/add the functionality in the issue OR address style issues, not both.
-- If you're running into an error, please give context. Explain what you're trying to do and how to reproduce the error.
-- Please use the same formatting in the code repository. You can configure your IDE to do it by using the prettier / linting config files included in each package.
-- If applicable, please edit the README.md file to reflect the changes.
+## Coding Guidelines
 
-### Issues
+To maintain a consistent codebase, please adhere to the following coding guidelines:
 
-Issues should be used to report problems, request a new feature, or discuss potential changes before a PR is created.
+- Follow the existing code formatting style.
+- Write clear and concise code with appropriate comments where necessary.
+- Ensure that your code is well-tested.
+- Keep the codebase clean by removing any unused or commented-out code.
 
-#### Solve an issue
+## License
 
-Scan through our [existing issues](https://github.com/scaffold-eth/scaffold-eth-2/issues) to find one that interests you.
+By contributing to Pendulum, you agree that your contributions will be licensed under the [MIT License](https://opensource.org/license/mit/). This allows the project maintainers to distribute, modify, and use your contributions as part of the Pendulum platform.
 
-If a contributor is working on the issue, they will be assigned to the individual. If you find an issue to work on, you are welcome to assign it to yourself and open a PR with a fix for it.
-
-#### Create a new issue
-
-If a related issue doesn't exist, you can open a new issue.
-
-Some tips to follow when you are creating an issue:
-
-- Provide as much context as possible. Over-communicate to give the most details to the reader.
-- Include the steps to reproduce the issue or the reason for adding the feature.
-- Screenshots, videos etc., are highly appreciated.
-
-### Pull Requests
-
-#### Pull Request Process
-
-We follow the ["fork-and-pull" Git workflow](https://github.com/susam/gitpr)
-
-1. Fork the repo
-2. Clone the project
-3. Create a new branch with a descriptive name
-4. Commit your changes to the new branch
-5. Push changes to your fork
-6. Open a PR in our repository and tag one of the maintainers to review your PR
-
-Here are some tips for a high-quality pull request:
-
-- Create a title for the PR that accurately defines the work done.
-- Structure the description neatly to make it easy to consume by the readers. For example, you can include bullet points and screenshots instead of having one large paragraph.
-- Add the link to the issue if applicable.
-- Have a good commit message that summarises the work done.
-
-Once you submit your PR:
-
-- We may ask questions, request additional information or ask for changes to be made before a PR can be merged. Please note that these are to make the PR clear for everyone involved and aims to create a frictionless interaction process.
-- As you update your PR and apply changes, mark each conversation resolved.
-
-Once the PR is approved, we'll "squash-and-merge" to keep the git commit history clean.
+We appreciate your contributions and look forward to your involvement in improving Pendulum!

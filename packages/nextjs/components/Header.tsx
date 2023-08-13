@@ -35,14 +35,11 @@ export const Header = () => {
   const navLinks = (
     <>
       <li>
-        <NavLink href="/">Home</NavLink>
-      </li>
-      <li>
         <NavLink href="/pendulum">Pendulums</NavLink>
       </li>
-      <li>
+      {session && <li>
         <NavLink href="/create">Create</NavLink>
-      </li>
+      </li>}
       {session && <li>
         <NavLink href="/profile">Profile</NavLink>
       </li>}

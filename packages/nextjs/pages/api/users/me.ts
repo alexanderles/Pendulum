@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 connect();
 console.log("connected");
 
-export default async function POST(req: NextApiRequest, res: NextApiResponse) {
+export default async function GET(req: NextApiRequest, res: NextApiResponse) {
 
   try {
     console.log("trying");

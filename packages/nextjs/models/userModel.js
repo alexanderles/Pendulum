@@ -15,16 +15,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide a password"],
   },
-  isVerified: {
-    type: Boolean,
-    default: false,
-  },
-  isExpert: {
-    type: Boolean,
-    default: false,
-  },
-  verifyToken: String,
-  verifyTokenExpiry: Date,
+  pendulums: [{
+    type: {type: mongoose.Schema.Types.ObjectId, ref: 'pendulums'},
+    refId: {
+      type: String,
+      required: [true, "Must have a refId"],
+    }
+  }],
 });
 
 const User = mongoose.models.users || mongoose.model("users", userSchema);

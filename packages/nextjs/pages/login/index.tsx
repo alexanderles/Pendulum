@@ -20,10 +20,10 @@ export default function LoginPage() {
   const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
-    if (session) {
+    if (status === "authenticated") {
       router.push("/profile");
     }
-  }, [session])
+  }, [status])
 
   function handleSignIn(e: any) {
     e.preventDefault();
@@ -87,7 +87,7 @@ export default function LoginPage() {
       </button>
       <Link href="/signup">Sign up with a new account</Link>
       <pre>{JSON.stringify(session, null, 2)}</pre>
-      <Button onClick={() => signIn("google")}>Sign in with Google</Button>
+      {/* <Button onClick={() => signIn("google")}>Sign in with Google</Button> */}
     </div>
   );
 }
