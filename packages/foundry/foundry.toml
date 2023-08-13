@@ -20,5 +20,12 @@ polygonMumbai = "https://polygon-mumbai.g.alchemy.com/v2/${ALCHEMY_API_KEY}"
 gnosis = "https://rpc.gnosischain.com"
 chiado = "https://rpc.chiadochain.net"
 
+[etherscan]
+mainnet = { key = "${ETHERSCAN_MAINNET_KEY}" }
+sepolia = { key = "${ETHERSCAN_MAINNET_KEY}" }
+optimismGoerli = { key = "${ETHERSCAN_MAINNET_KEY}" }
+optimism = { key = "${ETHERSCAN_MAINNET_KEY}" }
+baseGoerli = { key = "${ETHERSCAN_MAINNET_KEY}" }
+
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

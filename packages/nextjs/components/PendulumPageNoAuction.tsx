@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
@@ -93,6 +93,12 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
     },
   });
 
+  useEffect(() => {
+    if (attestationUID !== "") {
+      writeAsync();
+    }
+  }, [attestationUID]);
+
   const submitAttestation = async () => {
     let fanAddress = "0x0";
 
@@ -142,8 +148,6 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
         const newAttestationUID = await tx.wait();
         await setAttestationUID(newAttestationUID.substring(2));
         console.log(attestationUID);
-
-        await writeAsync();
       } catch (e) {
         console.log("Some error:", e);
       }

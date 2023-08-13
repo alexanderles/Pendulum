@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
@@ -97,6 +97,12 @@ export const ExpertPendulumPage = ({ address, questionId }: { address?: string; 
     },
   });
 
+  useEffect(() => {
+    if (attestationUID !== "") {
+      writeAsync();
+    }
+  }, [attestationUID]);
+
   const submitAttestation = async () => {
     let expertAddress = "0x0";
 
@@ -157,7 +163,7 @@ export const ExpertPendulumPage = ({ address, questionId }: { address?: string; 
         await setAttestationUID(newAttestationUID.substring(2));
         console.log(attestationUID);
 
-        await writeAsync();
+        // await writeAsync();
       } catch (e) {
         console.log("Some error:", e);
       }
