@@ -1,8 +1,24 @@
+// import {
+//   mainnet,
+//   polygon,
+//   optimism,
+//   arbitrum,
+//   sepolia,
+//   baseGoerli,
+//   zora,
+// } from 'wagmi/chains';
+// import { alchemyProvider } from 'wagmi/providers/alchemy';
+// import { publicProvider } from 'wagmi/providers/public';
 import { useState } from "react";
 import Link from "next/link";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 import { QRCodeSVG } from "qrcode.react";
 import CopyToClipboard from "react-copy-to-clipboard";
+// import {
+//   getDefaultWallets,
+//   RainbowKitProvider,
+// } from '@rainbow-me/rainbowkit';
 import { useDisconnect, useSwitchNetwork } from "wagmi";
 import {
   ArrowLeftOnRectangleIcon,
@@ -16,9 +32,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { Address, Balance, BlockieAvatar } from "~~/components/scaffold-eth";
 import { useAutoConnect, useNetworkColor } from "~~/hooks/scaffold-eth";
+import { scaffoldConfig } from "~~/scaffold.config";
+import { enabledChains } from "~~/services/web3/wagmiConnectors";
 import { getBlockExplorerAddressLink, getTargetNetwork } from "~~/utils/scaffold-eth";
 
 /**
+ *
  * Custom Wagmi Connect Button (watch balance + custom design)
  */
 export const RainbowKitCustomConnectButton = () => {
@@ -48,7 +67,7 @@ export const RainbowKitCustomConnectButton = () => {
                 );
               }
 
-              if (chain.unsupported || chain.id !== configuredNetwork.id) {
+              if (chain.unsupported) {
                 return (
                   <div className="dropdown dropdown-end">
                     <label tabIndex={0} className="btn btn-error btn-sm dropdown-toggle">
@@ -59,6 +78,26 @@ export const RainbowKitCustomConnectButton = () => {
                       tabIndex={0}
                       className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
                     >
+                      {enabledChains.map(chain => {
+                        return (
+                          <li key={chain.id}>
+                            <button
+                              className="menu-item btn-sm !rounded-xl"
+                              type="button"
+                              onClick={() => {
+                                scaffoldConfig.targetNetwork = chain;
+                                switchNetwork?.(chain.id);
+                              }}
+                            >
+                              <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
+                              <span className="whitespace-nowrap">
+                                Switch to <span style={{ color: networkColor }}>{chain.name}</span>
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                      {/* 
                       <li>
                         <button
                           className="menu-item btn-sm !rounded-xl"
@@ -70,7 +109,8 @@ export const RainbowKitCustomConnectButton = () => {
                             Switch to <span style={{ color: networkColor }}>{configuredNetwork.name}</span>
                           </span>
                         </button>
-                      </li>
+                      </li> */}
+
                       <li>
                         <button
                           className="menu-item text-error btn-sm !rounded-xl"
@@ -103,6 +143,25 @@ export const RainbowKitCustomConnectButton = () => {
                       tabIndex={0}
                       className="dropdown-content menu p-2 mt-1 shadow-center shadow-accent bg-base-200 rounded-box gap-1"
                     >
+                      {enabledChains.map(chain => {
+                        return (
+                          <li key={chain.id}>
+                            <button
+                              className="menu-item btn-sm !rounded-xl"
+                              type="button"
+                              onClick={() => {
+                                scaffoldConfig.targetNetwork = chain;
+                                switchNetwork?.(chain.id);
+                              }}
+                            >
+                              <ArrowsRightLeftIcon className="h-6 w-4 ml-2 sm:ml-0" />
+                              <span className="whitespace-nowrap">
+                                Switch to <span style={{ color: networkColor }}>{chain.name}</span>
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
                       <li>
                         {addressCopied ? (
                           <div className="btn-sm !rounded-xl">
@@ -137,6 +196,7 @@ export const RainbowKitCustomConnectButton = () => {
                           <UserCircleIcon className="h-6 w-4 ml-2 sm:ml-0" /> <span>Profile</span>
                         </Link>
                       </li>
+
                       <li>
                         <label htmlFor="qrcode-modal" className="btn-sm !rounded-xl">
                           <QrCodeIcon className="h-6 w-4 ml-2 sm:ml-0" />

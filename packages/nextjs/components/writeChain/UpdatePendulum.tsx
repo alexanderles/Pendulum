@@ -13,7 +13,7 @@ export const UpdatePendulum = ({ address }: { address?: string }) => {
   function daysToSeconds(days: number) {
     return days * 24 * 60 * 60;
   }
-
+  console.log("Address", address);
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "Pendulum",
     functionName: "setAuctionParameters",

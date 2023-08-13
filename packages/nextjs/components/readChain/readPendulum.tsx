@@ -11,6 +11,7 @@ import {
   useScaffoldEventHistory,
   useScaffoldEventSubscriber,
 } from "~~/hooks/scaffold-eth";
+import { formatEthereumAddress } from "~~/utils/pendulumUtis";
 import { ContractAbi, ContractName } from "~~/utils/scaffold-eth/contract";
 
 const MARQUEE_PERIOD_IN_SEC = 5;

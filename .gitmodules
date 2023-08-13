@@ -13,3 +13,6 @@
 [submodule "packages/foundry/lib/chainlink-brownie-contracts"]
 	path = packages/foundry/lib/chainlink-brownie-contracts
 	url = https://github.com/smartcontractkit/chainlink-brownie-contracts
+[submodule "packages/foundry/lib/eas-contracts"]
+	path = packages/foundry/lib/eas-contracts
+	url = https://github.com/ethereum-attestation-service/eas-contracts

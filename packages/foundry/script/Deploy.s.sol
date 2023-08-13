@@ -4,6 +4,8 @@ pragma solidity ^0.8.19;
 import "../contracts/Pendulum.sol";
 import "../contracts/ResponseRegistry.sol";
 import "../contracts/PendulumFactory.sol";
+// import "../contracts/EASLocal.sol";
+// import "../contracts/SchemaRegistryLocal.sol";
 import "./DeployHelpers.s.sol";
 //import {ERC1967Proxy} from "../lib/openzeppelin-contracts/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 // import "../lib/forge-std/src/console.sol";
@@ -29,6 +31,9 @@ contract DeployScript is ScaffoldETHDeploy {
     PendulumFactory public pendulumFactory;
     ResponseRegistry public registry;
 
+    // SchemaRegistryLocal public schemaRegistry;
+    // EASLocal public eas;
+
     function run() external {
         name = "Pendulum";
         symbol = "PP";
@@ -46,12 +51,26 @@ contract DeployScript is ScaffoldETHDeploy {
 
         vm.startBroadcast(deployerPrivateKey);
 
+        // schemaRegistry = new SchemaRegistryLocal();
+        // eas = new EASLocal(address(schemaRegistry));
+
+        // console.log("SchemaRegistry:", address(schemaRegistry));
+        // console.log("EAS:", address(eas));
+
         registry = new ResponseRegistry();
         console.log("Registry Impl:", address(registry));
 
         CreateProxy registryProxy = new CreateProxy(
             address(registry),
-            abi.encodeWithSelector(registry.initialize.selector)
+            abi.encodeWithSelector(
+                registry.initialize.selector,
+                bytes32(
+                    0x2c2feb2fbfcba7fcfd1e2ffd8e406a776feb2f45e98e7c3bf70d5253e8791594
+                ),
+                bytes32(
+                    0x77c24a785e44097ea17ba6b43273f49db544473b995f2b75e242d34ea0a94352
+                )
+            )
         );
 
         registry = ResponseRegistry(address(registryProxy));

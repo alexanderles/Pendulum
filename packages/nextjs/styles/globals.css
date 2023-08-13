@@ -7,6 +7,13 @@
   background: hsl(var(--b2));
 } */
 
+/* tailwind.css (or your custom styles file) */
+.disable-number-scroll::-webkit-inner-spin-button,
+.disable-number-scroll::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 :root,
 [data-theme] {
   background: #020617;

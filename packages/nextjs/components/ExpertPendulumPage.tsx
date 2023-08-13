@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
-import SetNewPriceCard from "./SetNewPriceCard";
+import { UpdatePendulum } from "./writeChain/UpdatePendulum";
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
-// import { useContractWrite } from "wagmi";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { getCorrectEASAddress, secondsToDhms } from "~~/utils/pendulumUtis";
 import { getTargetNetwork } from "~~/utils/scaffold-eth";
@@ -76,19 +74,23 @@ const ResponseCard = () => {
 //     },
 //   });
 
-export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
-  const [fanQuestion, setFanQuestion] = useState("");
-  const router = useRouter();
-  const [newPrice, setNewPrice] = useState(0);
+export const ExpertPendulumPage = ({ address, questionId }: { address?: string; questionId?: string }) => {
+  const [expertAnswer, setExpertAnswer] = useState("");
   const [attestationUID, setAttestationUID] = useState("");
+
+  const { data: questionCount } = useScaffoldContractRead({
+    contractName: "ResponseRegistry",
+    functionName: "questionCount",
+    args: [address],
+  });
 
   const EASObjectData = getCorrectEASAddress(getTargetNetwork().id);
   const EASAddress = EASObjectData.address;
 
   const { writeAsync, isLoading } = useScaffoldContractWrite({
     contractName: "ResponseRegistry",
-    functionName: "askQuestion",
-    args: [address, `0x${attestationUID}`],
+    functionName: "answerQuestion",
+    args: [address, questionCount, `0x${attestationUID}`],
     onBlockConfirmation: txnReceipt => {
       console.log("📦 Transaction blockHash", txnReceipt.blockHash);
       console.log(txnReceipt);
@@ -98,12 +100,11 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
   useEffect(() => {
     if (attestationUID !== "") {
       writeAsync();
-      router.push("/pendulum/" + address + "/" + attestationUID);
     }
   }, [attestationUID]);
 
   const submitAttestation = async () => {
-    let fanAddress = "0x0";
+    let expertAddress = "0x0";
 
     if (window.ethereum) {
       const accounts = await window.ethereum.request({ method: "eth_accounts" });
@@ -111,33 +112,38 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
       const signer = provider.getSigner();
 
       if (accounts.length > 0) {
-        fanAddress = accounts[0];
+        expertAddress = accounts[0];
       } else {
         console.log("No connected accounts");
       }
 
       try {
-        // const { data, isLoading, isSuccess, write } = useContractWrite({
-        //   address: EASAddress,
-        //   abi: wagmigotchiABI,
-        //   functionName: "attest",
-        // });
-
         const eas = new EAS(EASAddress);
         eas.connect(await signer);
-        const schemaEncoder = new SchemaEncoder("address fan, address pendulum, uint256 date, string question");
+        const schemaEncoder = new SchemaEncoder(
+          "address expert, address pendulum, bytes32 questionId, string answer, uint256 date",
+        );
         const dateValue = Number(Math.floor(new Date().getTime() / 1000));
+        //const questionVal = web3.utils.fromAscii(questionId);
 
+        //const questionValue = ethers.encodeBytes32String(questionId!);
+        //console.log("QuestionVal", questionValue);
         const encodeData = schemaEncoder.encodeData([
-          { name: "fan", value: fanAddress, type: "address" },
+          { name: "expert", value: expertAddress, type: "address" },
           { name: "pendulum", value: address!.toString(), type: "address" },
+          { name: "questionId", value: `0x${questionId!.toString()}`, type: "bytes32" },
+          { name: "answer", value: expertAnswer, type: "string" },
           { name: "date", value: dateValue, type: "uint256" },
-          { name: "question", value: fanQuestion, type: "string" },
         ]);
 
-        const schemaUID = "0x2c2feb2fbfcba7fcfd1e2ffd8e406a776feb2f45e98e7c3bf70d5253e8791594";
+        let schemaUID = "0x232f7e28e4344b9ca4f11c8bcd91cea51d2d76f2da34db7e8f191f487860148a";
+
+        if (EASAddress == "0xC2679fBD37d54388Ce493F1DB75320D236e1815e") {
+          schemaUID = "0x77c24a785e44097ea17ba6b43273f49db544473b995f2b75e242d34ea0a94352";
+        }
+
         const easData = {
-          recipient: fanAddress,
+          recipient: expertAddress,
           expirationTime: BigInt(0),
           revocable: true,
           data: encodeData,
@@ -145,12 +151,24 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
 
         const tx = await eas.attest({
           schema: schemaUID,
-          data: { recipient: fanAddress, expirationTime: BigInt(0), revocable: true, data: encodeData },
+          data: easData,
         });
+
+        // const { writeAsync, isLoading } = useScaffoldContractWrite({
+        //   contractName: "EAS",
+        //   functionName: "attest",
+        //   args: [`0x${schemaUID}`, easData],
+        //   onBlockConfirmation: txnReceipt => {
+        //     console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+        //     console.log(txnReceipt);
+        //   },
+        // });
 
         const newAttestationUID = await tx.wait();
         await setAttestationUID(newAttestationUID.substring(2));
-        console.log(newAttestationUID);
+        console.log(attestationUID);
+
+        // await writeAsync();
       } catch (e) {
         console.log("Some error:", e);
       }
@@ -159,71 +177,11 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
     }
   };
 
-  const { data: price } = useScaffoldContractRead({
-    contractName: "Pendulum",
-    functionName: "price",
-    address,
-  });
-
-  const { data: tax } = useScaffoldContractRead({
-    contractName: "Pendulum",
-    functionName: "tax",
-    address,
-  });
-
-  const { data: validUntil } = useScaffoldContractRead({
-    contractName: "Pendulum",
-    functionName: "validUntil",
-    address,
-  });
-
-  function getPrice() {
-    return ethers.formatEther(price ? price.toString() : "0");
-  }
-
-  function feePerWeek() {
-    const t = tax ? Number(tax) / 100 : 1;
-    return Number(getPrice()) * t;
-  }
-
   return (
     <div className="w-full h-screen mb-12 mt-12">
       <div className="w-10/12 flex justify-between items-start m-auto">
         <div className="flex flex-col w-full mr-8 rounded-lg justify-center text-center h-full">
-          <h4 className="text-xl text-slate-400 m-0"> Ask me about </h4>
-          <h1 className="text-4xl"> Account Abstraction </h1>
-          <div className="flex flex-col justify-between p-8">
-            <div className="flex justify-between">
-              <DataComponent label="Current Price" textLabel={getPrice() + " ETH"} align="text-left"></DataComponent>
-              <DataComponent
-                label="Current Fee/wk"
-                textLabel={feePerWeek() + " ETH"}
-                align="text-right"
-              ></DataComponent>
-            </div>
-            <div className="flex justify-between mt-8">
-              <DataComponent label="Pendulum Stops" textLabel="6 days" align="text-left"></DataComponent>
-              <DataComponent
-                label="Pendulum Breaks"
-                textLabel={secondsToDhms(Number(validUntil) / 1000)}
-                align="text-right"
-              ></DataComponent>
-            </div>
-          </div>
-          <SetNewPriceCard address={address}></SetNewPriceCard>
-
-          <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-2xl m-8 ">
-            <h3 className="text-3xl mb-6">Recharge Pendulum</h3>
-            <h4 className="text-lg text-stone-300">
-              Total Fee <span className="text-slate-50 font-semibold">$25</span>
-            </h4>
-            <FormItem label="" className="my-4">
-              <Input placeholder="1"></Input>
-            </FormItem>
-            <Button>
-              <span className="text-xl font-semibold">Recharge</span>
-            </Button>
-          </div>
+          <UpdatePendulum address={address}></UpdatePendulum>
         </div>
         <div className="flex flex-col w-full ml-8 rounded-lg justify-center text-center h-full">
           <h4 className="text-xl text-slate-400 m-0"> </h4>
@@ -241,12 +199,12 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
               <FormItem label="" className="mb-4">
                 <Input
                   placeholder="Input your question here"
-                  sizeClass="h-48 px-4 py-3 align-text-top"
+                  sizeClass="h-56 px-4 py-3 align-text-top"
                   fontClass="text-lg font-normal"
-                  onChange={e => setFanQuestion(e.target.value)}
+                  onChange={e => setExpertAnswer(e.target.value)}
                 ></Input>
               </FormItem>
-              <Button onClick={submitAttestation}> Ask Question </Button>
+              <Button onClick={submitAttestation}> Answer Question </Button>
             </div>
           </div>
         </div>

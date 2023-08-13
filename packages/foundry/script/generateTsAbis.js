@@ -65,13 +65,15 @@ function main() {
       (transaction) => transaction.transactionType == "CREATE"
     );
     transactionsCreate.forEach((transaction) => {
-      allGeneratedContracts[chain][0]["contracts"][
-        deployments[chain][transaction.contractAddress] ||
-          transaction.contractName
-      ] = {
-        address: transaction.contractAddress,
-        abi: getAbiOfContract(transaction.contractName),
-      };
+      if (transaction.contractName) {
+        allGeneratedContracts[chain][0]["contracts"][
+          deployments[chain][transaction.contractAddress] ||
+            transaction.contractName
+        ] = {
+          address: transaction.contractAddress,
+          abi: getAbiOfContract(transaction.contractName),
+        };
+      }
     });
   });
 
