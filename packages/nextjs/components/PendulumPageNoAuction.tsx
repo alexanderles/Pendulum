@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
@@ -77,6 +78,7 @@ const ResponseCard = () => {
 
 export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
   const [fanQuestion, setFanQuestion] = useState("");
+  const router = useRouter();
   const [newPrice, setNewPrice] = useState(0);
   const [attestationUID, setAttestationUID] = useState("");
 
@@ -96,6 +98,7 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
   useEffect(() => {
     if (attestationUID !== "") {
       writeAsync();
+      router.push("/pendulum/" + address + "/" + attestationUID);
     }
   }, [attestationUID]);
 
@@ -147,7 +150,7 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
 
         const newAttestationUID = await tx.wait();
         await setAttestationUID(newAttestationUID.substring(2));
-        console.log(attestationUID);
+        console.log(newAttestationUID);
       } catch (e) {
         console.log("Some error:", e);
       }

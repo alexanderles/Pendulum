@@ -28,9 +28,7 @@ const maybeEnablesChains = [
   chains.zora,
 ];
 export const enabledChains =
-  configuredNetwork.id === 1
-    ? [configuredNetwork, ...maybeEnablesChains]
-    : [configuredNetwork, chains.mainnet, ...maybeEnablesChains];
+  configuredNetwork.id === 1 ? [...maybeEnablesChains] : [chains.mainnet, ...maybeEnablesChains];
 
 /**
  * Chains for the app

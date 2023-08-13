@@ -131,12 +131,17 @@ export const ExpertPendulumPage = ({ address, questionId }: { address?: string; 
         const encodeData = schemaEncoder.encodeData([
           { name: "expert", value: expertAddress, type: "address" },
           { name: "pendulum", value: address!.toString(), type: "address" },
-          { name: "questionId", value: questionId!.toString(), type: "bytes32" },
+          { name: "questionId", value: `0x${questionId!.toString()}`, type: "bytes32" },
           { name: "answer", value: expertAnswer, type: "string" },
           { name: "date", value: dateValue, type: "uint256" },
         ]);
 
-        const schemaUID = "0x77c24a785e44097ea17ba6b43273f49db544473b995f2b75e242d34ea0a94352";
+        let schemaUID = "0x232f7e28e4344b9ca4f11c8bcd91cea51d2d76f2da34db7e8f191f487860148a";
+
+        if (EASAddress == "0xC2679fBD37d54388Ce493F1DB75320D236e1815e") {
+          schemaUID = "0x77c24a785e44097ea17ba6b43273f49db544473b995f2b75e242d34ea0a94352";
+        }
+
         const easData = {
           recipient: expertAddress,
           expirationTime: BigInt(0),

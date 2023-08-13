@@ -4151,7 +4151,7 @@ export function getCorrectEASAddress(network: number): { address: string; abi: a
           },
         ],
       };
-    case 8453:
+    case 84531:
       return {
         address: "0xAcfE09Fd03f7812F022FBf636700AdEA18Fd2A7A",
         abi: [
