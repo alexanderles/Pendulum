@@ -14,10 +14,10 @@ contract ResponseRegistry is
     UUPSUpgradeable,
     IResponseRegistry
 {
-    bytes32 questionAttestation;
-    bytes32 responseAttestation;
-
     uint256 private constant _VERSION = 1;
+
+    bytes32 questionSchemaUID;
+    bytes32 answerSchemaUID;
 
     /// Mapping for pendulum: questionId (1,2,3...) to AES attestation UID. questionId starts at 1.
     mapping(address pendulum => mapping(uint256 questionId => bytes32 questionAttestation))
@@ -38,7 +38,12 @@ contract ResponseRegistry is
     }
 
     /// @dev  Initializes the contract.
-    function initialize() public initializer {
+    function initialize(
+        bytes32 _questionSchemaUID,
+        bytes32 _answerSchemaUID
+    ) public initializer {
+        questionSchemaUID = _questionSchemaUID;
+        answerSchemaUID = _answerSchemaUID;
         __Ownable_init();
         __UUPSUpgradeable_init();
     }
@@ -61,11 +66,11 @@ contract ResponseRegistry is
         uint256 lastInvocationTime = IPendulum(pendulum).lastInvocationTime();
         uint256 cooldown = IPendulum(pendulum).questionFrequency();
 
-        if (block.timestamp < lastInvocationTime + cooldown) {
-            revert CooldownIncomplete(
-                lastInvocationTime + cooldown - block.timestamp
-            );
-        }
+        // if (block.timestamp < lastInvocationTime + cooldown) {
+        //     revert CooldownIncomplete(
+        //         lastInvocationTime + cooldown - block.timestamp
+        //     );
+        // }
 
         questionCount[pendulum] += 1;
         uint256 questionId = questionCount[pendulum];

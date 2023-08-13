@@ -6,7 +6,8 @@ import { UpdatePendulum } from "./writeChain/UpdatePendulum";
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { secondsToDhms } from "~~/utils/pendulumUtis";
+import { getCorrectEASAddress, secondsToDhms } from "~~/utils/pendulumUtis";
+import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 interface DataComponentProps {
   label: string;
@@ -77,7 +78,24 @@ export const ExpertPendulumPage = ({ address, questionId }: { address?: string; 
   const [expertAnswer, setExpertAnswer] = useState("");
   const [attestationUID, setAttestationUID] = useState("");
 
-  const EASSepoliaAddress = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e";
+  const { data: questionCount } = useScaffoldContractRead({
+    contractName: "ResponseRegistry",
+    functionName: "questionCount",
+    args: [address],
+  });
+
+  const EASObjectData = getCorrectEASAddress(getTargetNetwork().id);
+  const EASAddress = EASObjectData.address;
+
+  const { writeAsync, isLoading } = useScaffoldContractWrite({
+    contractName: "ResponseRegistry",
+    functionName: "answerQuestion",
+    args: [address, questionCount, `0x${attestationUID}`],
+    onBlockConfirmation: txnReceipt => {
+      console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+      console.log(txnReceipt);
+    },
+  });
 
   const submitAttestation = async () => {
     let expertAddress = "0x0";
@@ -94,17 +112,20 @@ export const ExpertPendulumPage = ({ address, questionId }: { address?: string; 
       }
 
       try {
-        const eas = new EAS(EASSepoliaAddress);
+        const eas = new EAS(EASAddress);
         eas.connect(await signer);
         const schemaEncoder = new SchemaEncoder(
           "address expert, address pendulum, bytes32 questionId, string answer, uint256 date",
         );
         const dateValue = Number(Math.floor(new Date().getTime() / 1000));
+        //const questionVal = web3.utils.fromAscii(questionId);
 
+        //const questionValue = ethers.encodeBytes32String(questionId!);
+        //console.log("QuestionVal", questionValue);
         const encodeData = schemaEncoder.encodeData([
           { name: "expert", value: expertAddress, type: "address" },
           { name: "pendulum", value: address!.toString(), type: "address" },
-          { name: "questionId", value: { questionId }, type: "bytes32" },
+          { name: "questionId", value: questionId!.toString(), type: "bytes32" },
           { name: "answer", value: expertAnswer, type: "string" },
           { name: "date", value: dateValue, type: "uint256" },
         ]);
@@ -133,8 +154,10 @@ export const ExpertPendulumPage = ({ address, questionId }: { address?: string; 
         // });
 
         const newAttestationUID = await tx.wait();
-        setAttestationUID(newAttestationUID);
+        await setAttestationUID(newAttestationUID.substring(2));
         console.log(attestationUID);
+
+        await writeAsync();
       } catch (e) {
         console.log("Some error:", e);
       }
@@ -170,7 +193,7 @@ export const ExpertPendulumPage = ({ address, questionId }: { address?: string; 
                   onChange={e => setExpertAnswer(e.target.value)}
                 ></Input>
               </FormItem>
-              <Button onClick={submitAttestation}> Ask Question </Button>
+              <Button onClick={submitAttestation}> Answer Question </Button>
             </div>
           </div>
         </div>

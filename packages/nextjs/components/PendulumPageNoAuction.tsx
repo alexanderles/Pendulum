@@ -2,10 +2,13 @@ import { useState } from "react";
 import Button from "./Button";
 import FormItem from "./Forms/FormItem";
 import Input from "./Forms/Input";
+import SetNewPriceCard from "./SetNewPriceCard";
 import { EAS, SchemaEncoder } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
+// import { useContractWrite } from "wagmi";
 import { useScaffoldContractRead, useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { secondsToDhms } from "~~/utils/pendulumUtis";
+import { getCorrectEASAddress, secondsToDhms } from "~~/utils/pendulumUtis";
+import { getTargetNetwork } from "~~/utils/scaffold-eth";
 
 interface DataComponentProps {
   label: string;
@@ -77,7 +80,18 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
   const [newPrice, setNewPrice] = useState(0);
   const [attestationUID, setAttestationUID] = useState("");
 
-  const EASSepoliaAddress = "0xC2679fBD37d54388Ce493F1DB75320D236e1815e";
+  const EASObjectData = getCorrectEASAddress(getTargetNetwork().id);
+  const EASAddress = EASObjectData.address;
+
+  const { writeAsync, isLoading } = useScaffoldContractWrite({
+    contractName: "ResponseRegistry",
+    functionName: "askQuestion",
+    args: [address, `0x${attestationUID}`],
+    onBlockConfirmation: txnReceipt => {
+      console.log("📦 Transaction blockHash", txnReceipt.blockHash);
+      console.log(txnReceipt);
+    },
+  });
 
   const submitAttestation = async () => {
     let fanAddress = "0x0";
@@ -94,7 +108,13 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
       }
 
       try {
-        const eas = new EAS(EASSepoliaAddress);
+        // const { data, isLoading, isSuccess, write } = useContractWrite({
+        //   address: EASAddress,
+        //   abi: wagmigotchiABI,
+        //   functionName: "attest",
+        // });
+
+        const eas = new EAS(EASAddress);
         eas.connect(await signer);
         const schemaEncoder = new SchemaEncoder("address fan, address pendulum, uint256 date, string question");
         const dateValue = Number(Math.floor(new Date().getTime() / 1000));
@@ -119,19 +139,11 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
           data: { recipient: fanAddress, expirationTime: BigInt(0), revocable: true, data: encodeData },
         });
 
-        // const { writeAsync, isLoading } = useScaffoldContractWrite({
-        //   contractName: "EAS",
-        //   functionName: "attest",
-        //   args: [`0x${schemaUID}`, easData],
-        //   onBlockConfirmation: txnReceipt => {
-        //     console.log("📦 Transaction blockHash", txnReceipt.blockHash);
-        //     console.log(txnReceipt);
-        //   },
-        // });
-
         const newAttestationUID = await tx.wait();
-        setAttestationUID(newAttestationUID);
-        console.log(newAttestationUID);
+        await setAttestationUID(newAttestationUID.substring(2));
+        console.log(attestationUID);
+
+        await writeAsync();
       } catch (e) {
         console.log("Some error:", e);
       }
@@ -139,17 +151,6 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
       console.log("No Ethereum provider detected");
     }
   };
-
-  const { writeAsync, isLoading } = useScaffoldContractWrite({
-    contractName: "Pendulum",
-    functionName: "setPrice",
-    args: [ethers.parseEther(String(newPrice))],
-    onBlockConfirmation: txnReceipt => {
-      console.log("📦 Transaction blockHash", txnReceipt.blockHash);
-      console.log(txnReceipt);
-    },
-    address: address,
-  });
 
   const { data: price } = useScaffoldContractRead({
     contractName: "Pendulum",
@@ -202,18 +203,7 @@ export const PendulumPageNoAuction = ({ address }: { address?: string }) => {
               ></DataComponent>
             </div>
           </div>
-          <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-2xl m-8 ">
-            <h3 className="text-3xl mb-6">Set New Price</h3>
-            <h4 className="text-lg text-stone-300">
-              New fee per week <span className="text-slate-50 font-semibold">$25</span>
-            </h4>
-            <FormItem label="" className="my-4">
-              <Input placeholder="$50"></Input>
-            </FormItem>
-            <Button type="submit" onClick={() => writeAsync()}>
-              <span className="text-xl font-semibold">Set</span>
-            </Button>
-          </div>
+          <SetNewPriceCard address={address}></SetNewPriceCard>
 
           <div className="flex flex-col py-8 px-8 bg-purple-600 rounded-2xl m-8 ">
             <h3 className="text-3xl mb-6">Recharge Pendulum</h3>
