@@ -95,7 +95,7 @@ export default function Pendulum({ params }: any) {
         {typeof address === "string" && isAddress(address) ? (
           <PendulumPageNoAuction address={address}></PendulumPageNoAuction>
         ) : (
-          <p>Invalid address</p>
+          <p>Invalid address 2</p>
         )}
       </div>
     );

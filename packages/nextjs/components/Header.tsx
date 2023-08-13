@@ -43,6 +43,9 @@ export const Header = () => {
       <li>
         <NavLink href="/create">Create</NavLink>
       </li>
+      {session && <li>
+        <NavLink href="/profile">Profile</NavLink>
+      </li>}
     </>
   );
 

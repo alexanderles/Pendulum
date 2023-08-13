@@ -33,7 +33,8 @@ export default NextAuth({
           const response = await axios.post(process.env.NEXTAUTH_URL + "/api/users/login", user);
           console.log("Login success: ", response.data);
           toast.success("Login success");
-          return user;
+          const sessionUser = response.data.user;
+          return sessionUser;
         } catch (error) {
           console.log("Login failed: ", error.message);
           toast.error(error.message);

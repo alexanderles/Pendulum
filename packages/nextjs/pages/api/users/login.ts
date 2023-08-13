@@ -45,6 +45,7 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     const response = res.json({
       message: "Login successful",
       success: true,
+      user,
     });
 
     return response;

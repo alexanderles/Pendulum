@@ -1,19 +1,28 @@
-import { getDataFromToken } from "../../../utils/getDataFromToken";
-
-getDataFromToken;
-
-import { NextRequest, NextResponse } from "next/server";
 import User from "../../../models/userModel";
 import { connect } from "../../../dbConfig/dbConfig";
+import { NextApiRequest, NextApiResponse } from "next";
+import { useSession } from "next-auth/react"
 
 connect();
+console.log("connected");
 
-export async function GET(request: NextRequest) {
+export default async function POST(req: NextApiRequest, res: NextApiResponse) {
+
   try {
-    const userId = await getDataFromToken(request);
-    const user = await User.findOne({ _id: userId }).select("-password");
-    return NextResponse.json({ message: "User found", data: user });
+    console.log("trying");
+
+    const reqBody = await req.body;
+    const { email } = reqBody;
+    console.log("email:", email);
+    const user = await User.findOne({ email }).select("-password");
+
+    console.log("user from me.ts: ", user);
+    if (!user) {
+      res.json({ error: "Could not find user" });
+    }
+
+    return res.json({ message: "User found", data: user });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return res.json({ error: error.message });
   }
 }

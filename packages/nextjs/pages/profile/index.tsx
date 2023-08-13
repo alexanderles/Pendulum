@@ -1,21 +1,31 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
-import { useRouter } from "next/router";
+import Button from "~~/components/Button";
 
 const ProfilePage = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
+  const [data, setData] = useState("No data");
 
   useEffect(() => {
     // Redirect to the login page if the user is not signed in
     if (!session?.user) {
       router.push("/login");
     }
-  }, [session, router]);
+
+  }, []);
+
+  const getUserDetails = async () => {
+    const res = await axios.post("/api/users/me", {email: session?.user?.email});
+    console.log("user maybe: ", res.data.user);
+    setData(res.data.data._id);
+  };
 
   return (
     <div className="max-w-3xl mx-auto p-8">
@@ -57,6 +67,7 @@ const ProfilePage = () => {
         <div className="bg-white rounded-lg shadow-md">{/* NFT widget content */}</div>
         {/* Repeat this block for each NFT widget */}
       </div>
+      <Button onClick={getUserDetails()}>Details</Button>
     </div>
   );
 };

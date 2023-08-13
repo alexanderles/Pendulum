@@ -19,10 +19,15 @@ export default function LoginPage() {
   const [buttonDisabled, setButtonDisabled] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
+  useEffect(() => {
+    if (session) {
+      router.push("/profile");
+    }
+  }, [session])
+
   function handleSignIn(e: any) {
     e.preventDefault();
     signIn("credentials", { email: user.email, password: user.password });
-    router.push("/profile");
   }
 
   // const onLogin = async () => {
