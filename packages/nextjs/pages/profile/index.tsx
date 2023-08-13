@@ -1,16 +1,27 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import { useRouter } from "next/router";
 
 const ProfilePage = () => {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+
+  useEffect(() => {
+    // Redirect to the login page if the user is not signed in
+    if (!session?.user) {
+      router.push("/login");
+    }
+  }, [session, router]);
+
   return (
     <div className="max-w-3xl mx-auto p-8">
       <div className="flex items-center justify-between">
-        
         <div className="flex items-center">
-          <img
-            src="path/to/profile-photo.jpg"
-            alt="Profile"
-            className="w-16 h-16 rounded-full mr-4"
-          />
+          <img src="path/to/profile-photo.jpg" alt="Profile" className="w-16 h-16 rounded-full mr-4" />
           <div>
             <h1 className="text-2xl font-semibold">Your Name</h1>
             <p className="text-gray-500">NFT Enthusiast</p>
@@ -32,9 +43,8 @@ const ProfilePage = () => {
         </div>
       </div>
       <p className="mt-4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vel
-        tincidunt quam. Donec nec odio vitae eros ultrices vehicula vel eget
-        libero. Sed varius et ex non consectetur.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vel tincidunt quam. Donec nec odio vitae eros
+        ultrices vehicula vel eget libero. Sed varius et ex non consectetur.
       </p>
       <div className="mt-8 bg-white bg-opacity-80 backdrop-blur-md p-4 rounded-lg flex items-center justify-between">
         <p className="text-gray-500">Followers: 1.5K</p>
@@ -44,13 +54,13 @@ const ProfilePage = () => {
       </div>
       <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
         {/* Repeat this block for each NFT widget */}
-        <div className="bg-white rounded-lg shadow-md">
-          {/* NFT widget content */}
-        </div>
+        <div className="bg-white rounded-lg shadow-md">{/* NFT widget content */}</div>
         {/* Repeat this block for each NFT widget */}
       </div>
     </div>
   );
 };
+
+ProfilePage.auth = true;
 
 export default ProfilePage;

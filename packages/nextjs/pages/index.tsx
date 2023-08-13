@@ -5,6 +5,7 @@ import * as THREE from "three";
 import HALO from "vanta/dist/vanta.halo.min";
 import Button from "~~/components/Button";
 import { MetaHeader } from "~~/components/MetaHeader";
+import { useSession } from "next-auth/react";
 
 const Home: NextPage = () => {
   const [vantaEffect, setVantaEffect] = useState<any>(0);
@@ -31,6 +32,8 @@ const Home: NextPage = () => {
       if (vantaEffect) vantaEffect.destroy();
     };
   }, [vantaEffect]);
+
+  const { data, status } = useSession();
 
   return (
     <>

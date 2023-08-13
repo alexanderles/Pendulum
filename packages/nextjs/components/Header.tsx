@@ -1,8 +1,10 @@
+"use client";
 import React, { useCallback, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Button from "./Button";
+import { signOut, useSession } from "next-auth/react";
 import { Bars3Icon } from "@heroicons/react/24/outline";
 import { FaucetButton, RainbowKitCustomConnectButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
@@ -22,6 +24,7 @@ const NavLink = ({ href, children }: { href: string; children: React.ReactNode }
  * Site header
  */
 export const Header = () => {
+  const { data: session, status } = useSession();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
   useOutsideClick(
@@ -81,6 +84,15 @@ export const Header = () => {
       <div className="navbar-end flex-grow mr-4">
         <RainbowKitCustomConnectButton />
         <FaucetButton />
+        {session ? (
+          <Button onClick={signOut} sizeClass="p-3 ml-4" fontSize="font-bold text-sm">
+            <Link href="/login">Sign out</Link>
+          </Button>
+        ) : (
+          <Button sizeClass="p-3 ml-4" fontSize="font-bold text-sm">
+            <Link href="/login">Sign in</Link>
+          </Button>
+        )}
       </div>
     </div>
   );

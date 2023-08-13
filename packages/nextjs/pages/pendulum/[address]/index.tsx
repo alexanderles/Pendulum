@@ -13,7 +13,7 @@ import { useScaffoldContractRead } from "~~/hooks/scaffold-eth/useScaffoldContra
 
 export default function Pendulum({ params }: any) {
   const router = useRouter();
-  const address = router.query.address;
+  const address = router.query.slug;
   const [amount, setAmount] = useState("0");
   const [price, setPrice] = useState("0");
 
@@ -60,7 +60,7 @@ export default function Pendulum({ params }: any) {
     }
   }
 
-  function isAuctionRunning() {
+  function auctionIsRunning() {
     if ((auctionEndTime ? auctionEndTime : 0 * 1000) < Date.now()) {
       return false;
     } else {
@@ -68,9 +68,9 @@ export default function Pendulum({ params }: any) {
     }
   }
 
-  console.log("AuctionRunning?", isAuctionRunning());
+  console.log("AuctionRunning?", auctionIsRunning());
 
-  if (isAuctionRunning()) {
+  if (auctionIsRunning()) {
     return (
       <div className="flex align-center w-full">
         {typeof address === "string" && isAddress(address) ? ( // Check if address is a valid string

@@ -5,7 +5,9 @@ import { deleteCookie, getCookie, getCookies, setCookie } from "cookies-next";
 import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 
+console.log("going to connect");
 connect();
+console.log("connected");
 
 export default async function POST(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -26,19 +28,19 @@ export default async function POST(req: NextApiRequest, res: NextApiResponse) {
     }
 
     // Create token data
-    const tokenData = {
-      id: user._id,
-      username: user.username,
-      email: user.email,
-    };
+    // const tokenData = {
+    //   id: user._id,
+    //   username: user.username,
+    //   email: user.email,
+    // };
 
     // Create token
-    const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
-      expiresIn: "1d",
-    });
+    // const token = await jwt.sign(tokenData, process.env.TOKEN_SECRET!, {
+    //   expiresIn: "1d",
+    // });
 
-    setCookie("token", token, { req, res, httpOnly: true });
-    console.log("response from login: ", res);
+    // setCookie("token", token, { req, res, httpOnly: true });
+    // console.log("response from login: ", res);
 
     const response = res.json({
       message: "Login successful",
